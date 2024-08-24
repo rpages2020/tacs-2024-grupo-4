@@ -1,0 +1,74 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.3'
+	id 'io.spring.dependency-management' version '1.1.6'
+	id 'groovy'
+	id 'jacoco'
+	id 'checkstyle'
+}
+
+group = 'tp-tac'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '21'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+
+	// logs
+	implementation 'org.apache.commons:commons-text:1.11.0'
+
+	//Spring
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	//Mapper
+	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+	testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+
+	//DB
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	//Lombok
+	compileOnly 'org.projectlombok:lombok:1.18.32'
+	annotationProcessor 'org.projectlombok:lombok:1.18.32'
+	testCompileOnly 'org.projectlombok:lombok:1.18.32'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
+
+
+	//Testing
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.mock-server:mockserver-junit-jupiter:5.15.0'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.apache.groovy:groovy:4.0.22'
+	testImplementation 'org.apache.groovy:groovy-json:4.0.22'
+	testImplementation 'org.apache.groovy:groovy-xml:4.0.22'
+	testImplementation 'org.spockframework:spock-core:2.4-M4-groovy-4.0'
+	testImplementation 'org.spockframework:spock-spring:2.4-M4-groovy-4.0'
+
+	testImplementation('com.athaydes:spock-reports:2.5.1-groovy-4.0') {
+		transitive = false
+	}
+	testImplementation('org.testcontainers:mysql')
+}
+
+test {
+	useJUnitPlatform()
+	systemProperty "file.encoding", "utf-8"
+	finalizedBy jacocoTestReport, jacocoTestCoverageVerification
+	maxParallelForks = Runtime.runtime.availableProcessors()
+}
