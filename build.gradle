@@ -44,10 +44,10 @@ dependencies {
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
 	//Lombok
-	compileOnly 'org.projectlombok:lombok:1.18.32'
-	annotationProcessor 'org.projectlombok:lombok:1.18.32'
-	testCompileOnly 'org.projectlombok:lombok:1.18.32'
-	testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
+	compileOnly 'org.projectlombok:lombok:1.18.34'
+	annotationProcessor 'org.projectlombok:lombok:1.18.34'
+	testCompileOnly 'org.projectlombok:lombok:1.18.34'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 
 
 	//Testing
@@ -72,3 +72,41 @@ test {
 	finalizedBy jacocoTestReport, jacocoTestCoverageVerification
 	maxParallelForks = Runtime.runtime.availableProcessors()
 }
+jacocoTestReport {
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, excludes: [
+
+					"tp_tac/grupo_4/entities/**",
+					"tp_tac/grupo_4/dtos/**",
+					"tp_tac/grupo_4/exceptions/**",
+					"tp_tac/grupo_4/mappers/**",
+					"tp_tac/grupo_4/Grupo4Application*"
+			])
+		}))
+	}
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			excludes = [
+					'tp_tac.grupo_4.configuration.*',
+					'tp_tac.grupo_4.controller.*',
+					'tp_tac.grupo_4.enums.*',
+					'tp_tac.grupo_4.dto.*',
+					'tp_tac.grupo_4.Grupo4Application',
+			]
+			element = 'CLASS'
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = 0.00
+			}
+		}
+	}
+}
+check {
+	dependsOn jacocoTestCoverageVerification
+}
+
