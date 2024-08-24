@@ -5,4 +5,7 @@
     docker pull --platform linux/x86_64 mysql:8.0
     docker run --platform linux/x86_64 --name mysql -p 3306:3306 -d -e 'MYSQL_ROOT_PASSWORD=P4ssw0rd!' mysql:8.0
 
+### BD
+    docker exec -it mysql mysql -u root -pP4ssw0rd! -e "CREATE DATABASE tac_grupo_4;"
+
 
