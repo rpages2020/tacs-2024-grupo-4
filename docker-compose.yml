@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: P4ssw0rd!
+      MONGO_INITDB_DATABASE: tac_grupo_4
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - my-network
+networks:
+  my-network:
+    driver: bridge
+
+volumes:
+  mongodb-data:

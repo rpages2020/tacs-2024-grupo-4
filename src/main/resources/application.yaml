@@ -5,4 +5,9 @@ spring:
     name: grupo-4
   data:
     mongodb:
-      uri: mongodb://root:P4ssw0rd!@localhost:27017/tac-grupo-4
+      authentication-database: admin
+      database: tac-grupo-4
+      additional-hosts: localhost
+      username: root
+      password: P4ssw0rd!
+
