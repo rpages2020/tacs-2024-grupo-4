@@ -3,18 +3,6 @@ server:
 spring:
   application:
     name: grupo-4
-  datasource:
-    url: jdbc:mysql://localhost/tac-grupo-4
-    username: root
-    password: P4ssw0rd!
-    driver-class-name: com.mysql.jdbc.Driver
-  jpa:
-    show-sql: false
-    hibernate:
-      ddl-auto: update
-    open-in-view: false
-    properties:
-      hibernate:
-        format_sql: true
-        generate_statistics: false
-        dialect: org.hibernate.dialect.MySQL8Dialect
+  data:
+    mongodb:
+      uri: mongodb://root:P4ssw0rd!@localhost:27017/tac-grupo-4

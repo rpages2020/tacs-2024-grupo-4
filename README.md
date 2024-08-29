@@ -2,10 +2,10 @@
 
 ## Setup
 ### Docker
-    docker pull --platform linux/x86_64 mysql:8.0
-    docker run --platform linux/x86_64 --name mysql -p 3306:3306 -d -e 'MYSQL_ROOT_PASSWORD=P4ssw0rd!' mysql:8.0
+    docker pull --platform linux/x86_64 mongo:latest
+    docker run --platform linux/x86_64 --name mongodb -p 27017:27017 -d -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=P4ssw0rd! mongo:latest
 
 ### BD
-    docker exec -it mysql mysql -u root -pP4ssw0rd! -e "CREATE DATABASE tac_grupo_4;"
+    docker exec -it mongodb mongodb -u root -p P4ssw0rd! --authenticationDatabase admin --eval "db = db.getSiblingDB('tac_grupo_4'); db.createCollection('placeholder');"
 
-
+v
