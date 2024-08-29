@@ -1,4 +1,4 @@
-package tp_tac.grupo_4.entities;
+package tac.grupo_4.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,16 +7,14 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Document
-public class Evento {
+public class Ticket {
   @Id
   private long id;
 
-  private List<Ticket> tickets;
+  private boolean vendido = false;
 }

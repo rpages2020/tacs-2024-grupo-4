@@ -7,7 +7,7 @@ plugins {
 	id 'checkstyle'
 }
 
-group = 'tp-tac'
+group = 'tac'
 version = '0.0.1-SNAPSHOT'
 
 java {
@@ -22,6 +22,17 @@ configurations {
 
 repositories {
 	mavenCentral()
+}
+
+checkstyle {
+	configFile = file("$rootDir/checkstyle/checkstyle.xml")
+	toolVersion = '10.12.2'
+}
+
+copy {
+	from 'hooks/pre-commit','hooks/pre-push'
+	into '.git/hooks'
+	fileMode 0777
 }
 
 dependencies {
@@ -90,11 +101,11 @@ jacocoTestCoverageVerification {
 	violationRules {
 		rule {
 			excludes = [
-					'tp_tac.grupo_4.configuration.*',
-					'tp_tac.grupo_4.controller.*',
-					'tp_tac.grupo_4.enums.*',
-					'tp_tac.grupo_4.dto.*',
-					'tp_tac.grupo_4.Grupo4Application',
+					'tp-tac.grupo_4.configuration.*',
+					'tp-tac.grupo_4.controller.*',
+					'tp-tac.grupo_4.enums.*',
+					'tp-tac.grupo_4.dto.*',
+					'tp-tac.grupo_4.Grupo4Application',
 			]
 			element = 'CLASS'
 			limit {

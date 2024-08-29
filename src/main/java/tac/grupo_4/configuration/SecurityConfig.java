@@ -1,4 +1,4 @@
-package tp_tac.grupo_4.configuration;
+package tac.grupo_4.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

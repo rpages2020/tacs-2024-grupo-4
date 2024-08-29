@@ -1,4 +1,4 @@
-package tp_tac.grupo_4.dtos;
+package tac.grupo_4.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
