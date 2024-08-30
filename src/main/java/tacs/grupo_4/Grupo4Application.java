@@ -1,4 +1,4 @@
-package tac.grupo_4;
+package tacs.grupo_4;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

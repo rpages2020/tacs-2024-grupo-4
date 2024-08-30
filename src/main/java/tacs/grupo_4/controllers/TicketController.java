@@ -1,4 +1,4 @@
-package tac.grupo_4.controllers;
+package tacs.grupo_4.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

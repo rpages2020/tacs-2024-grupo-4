@@ -1,4 +1,4 @@
-package tac.grupo_4.configuration;
+package tacs.grupo_4.configuration;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import tac.grupo_4.exceptions.ErrorResponseDTO;
+import tacs.grupo_4.exceptions.ErrorResponseDTO;
 
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;

@@ -1,10 +1,10 @@
-package tac.grupo_4.services;
+package tacs.grupo_4.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import tac.grupo_4.entities.Ticket;
-import tac.grupo_4.dtos.TicketAddDTO;
-import tac.grupo_4.repositories.TicketRepository;
+import tacs.grupo_4.entities.Ticket;
+import tacs.grupo_4.dtos.TicketAddDTO;
+import tacs.grupo_4.repositories.TicketRepository;
 
 @Service
 @Slf4j
@@ -18,7 +18,7 @@ public class ReservasService {
 
   public void save(TicketAddDTO ticketAddDTO) {
     ticketRepository.save(Ticket.builder()
-        .vendido(false)
+        .reservado(true)
         .build());
   }
 }

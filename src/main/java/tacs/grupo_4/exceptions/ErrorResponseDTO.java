@@ -1,4 +1,4 @@
-package tac.grupo_4.exceptions;
+package tacs.grupo_4.exceptions;
 
 import lombok.Builder;
 import lombok.Data;
