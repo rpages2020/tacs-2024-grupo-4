@@ -28,7 +28,8 @@ public class Ubicacion {
     private String nombre;
     private Double precio;
     private Evento evento;
-    private Integer cantidadTickets;
+    private Integer capacidad;
+    private Integer ticketsVendidos;
     private List<Reserva> reservas = new ArrayList<>();
 
 
@@ -37,12 +38,12 @@ public class Ubicacion {
         return this.precio;
     }
 
-    public Boolean puedeRecibirReserva() {
-        return this.cantidadTickets > reservas.size();
-    }
+//    public Boolean puedeRecibirReserva() {
+//        return this.cantidadTickets > reservas.size();
+//    }
 
-    public Reserva reservar(Usuario usuario) {
-        return this.puedeRecibirReserva() ? new Reserva(this, usuario) : null; // atajar esta execpcion
-    }
+//    public Reserva reservar(Usuario usuario) {
+//        return this.puedeRecibirReserva() ? new Reserva(this, usuario) : null; // atajar esta execpcion
+//    }
 
 }

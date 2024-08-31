@@ -11,6 +11,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,6 +28,7 @@ public class Reserva {
     private LocalDate fecha;
     private String hora;
     private String descripcion;
+    private List<Ticket> tickets;
 
 
     public Reserva(Ubicacion ubicacion, Usuario usuario) {

@@ -25,7 +25,8 @@ public class Evento {
     private long id;
     private String nombre;
     private LocalDate fecha;
-    private List<Ubicacion> ubicaciones = new ArrayList();
+    private List<Ubicacion> ubicaciones;
+
 
     public Evento(String prueba, LocalDate fecha, List<Ubicacion> ubicaciones) {
     }

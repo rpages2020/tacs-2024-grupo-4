@@ -26,8 +26,8 @@ public class Usuario {
     private Integer id;
     private String nombre;
     private String email;
-    private List<Ticket> tickets = new ArrayList();
-    private List<Reserva> reservas = new ArrayList();
+    private List<Reserva> reservas;
+    private List<Ticket> tickets;
 
 
 }
