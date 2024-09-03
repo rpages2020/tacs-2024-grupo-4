@@ -2,9 +2,6 @@ package tacs.grupo_4.entities;
 
 
 import java.util.List;
-import java.util.ArrayList;
-
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +23,6 @@ public class Usuario {
     private Integer id;
     private String nombre;
     private String email;
-    private List<Reserva> reservas;
     private List<Ticket> tickets;
 
 

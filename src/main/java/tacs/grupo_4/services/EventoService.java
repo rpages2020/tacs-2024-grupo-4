@@ -2,7 +2,6 @@ package tacs.grupo_4.services;
 
 import tacs.grupo_4.entities.Evento;
 import tacs.grupo_4.repositories.EventoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,8 +9,11 @@ import java.util.List;
 @Service
 public class EventoService {
 
-    @Autowired
-    private EventoRepository eventoRepository;
+    private final EventoRepository eventoRepository;
+
+    public EventoService(EventoRepository eventoRepository) {
+        this.eventoRepository = eventoRepository;
+    }
 
     public Evento crearEvento(Evento evento) {
         return eventoRepository.save(evento);
@@ -34,7 +36,6 @@ public class EventoService {
         Evento eventoExistente = obtenerEventoPorId(id);
         eventoExistente.setNombre(eventoActualizado.getNombre());
         eventoExistente.setFecha(eventoActualizado.getFecha());
-        eventoExistente.setUbicaciones(eventoActualizado.getUbicaciones());
         return eventoRepository.save(eventoExistente);
     }
 }

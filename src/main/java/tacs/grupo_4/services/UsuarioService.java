@@ -3,7 +3,6 @@ package tacs.grupo_4.services;
 import tacs.grupo_4.entities.Ticket;
 import tacs.grupo_4.entities.Usuario;
 import tacs.grupo_4.repositories.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,8 +10,11 @@ import java.util.List;
 @Service
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
+
+    public UsuarioService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
 
     public Usuario crearUsuario(Usuario usuario) {
         return usuarioRepository.save(usuario);
@@ -32,7 +34,7 @@ public class UsuarioService {
 
     public void cancelarReserva(String id, String ticketId) {
         Usuario usuario = obtenerUsuarioPorId(id);
-        usuario.getTickets().removeIf(ticket -> ticket.getId().equals(ticketId));
+        usuario.getTickets().removeIf(ticket -> ticket.getId().equals(Integer.valueOf(ticketId)));
         usuarioRepository.save(usuario);
     }
 

@@ -2,15 +2,16 @@ package tacs.grupo_4.services;
 
 import tacs.grupo_4.entities.Ticket;
 import tacs.grupo_4.repositories.TicketRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TicketServicio {
 
-    @Autowired
-    private TicketRepository ticketRepository;
+    private final TicketRepository ticketRepository;
+
+    public TicketServicio(TicketRepository ticketRepository) {
+        this.ticketRepository = ticketRepository;
+    }
 
     public Ticket crearTicket(Ticket ticket) {
         return ticketRepository.save(ticket);
@@ -27,11 +28,9 @@ public class TicketServicio {
 
     public Ticket actualizarTicket(Long id, Ticket ticketActualizado) {
         Ticket ticketExistente = obtenerTicketPorId(id);
-        ticketExistente.setReserva(ticketActualizado.getReserva());
-       //ticketExistente.setUbicacion(ticketActualizado.getUbicacion());// un ticket pertence a una ubicacion todo el tiempo
+        ticketExistente.setUbicacion(ticketActualizado.getUbicacion()); // un ticket pertence a una ubicacion
         ticketExistente.setPrecio(ticketActualizado.getPrecio()); //manejar en el front?
         ticketExistente.setUsuario(ticketActualizado.getUsuario());
-        ticketExistente.setReservado(ticketActualizado.getReservado());
         return ticketRepository.save(ticketExistente);
     }
 }

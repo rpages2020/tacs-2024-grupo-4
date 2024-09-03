@@ -9,6 +9,8 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Data
 @Getter
@@ -20,22 +22,8 @@ public class Ticket {
     @Id
     private Long id;
     private Double precio;
-    private Ubicacion ubicacion;
-    private Reserva reserva;
-    @Builder.Default
-    private Boolean reservado = false;
+    private String ubicacion;
     private Usuario usuario;
+    private LocalDateTime fechaYHora;
 
-
-    public Double precio() { // se podirian manejar precios diferidos pero habria que verlos
-        return this.precio == null ? this.ubicacion.precio() : this.precio;
-    }
-
-    public Boolean getReservado() {
-        return this.reservado;
-    }
-
-    public void setReservado(Boolean booleano) {
-        this.reservado = booleano;
-    }
 }
