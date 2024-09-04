@@ -8,4 +8,6 @@
 ### BD
     docker exec -it mongodb mongodb -u root -p P4ssw0rd! --authenticationDatabase admin --eval "db = db.getSiblingDB('tac_grupo_4'); db.createCollection('placeholder');"
 
-v
+### Docker Compose
+    docker-compose up -d
+

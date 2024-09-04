@@ -14,6 +14,21 @@ services:
       - mongodb-data:/data/db
     networks:
       - my-network
+
+  grupo_4:
+    build:
+      context: .
+    container_name: grupo_4
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=mongodb://root:P4ssw0rd!@mongodb:27017/tac_grupo_4  # Configura la URL de MongoDB
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=P4ssw0rd!
+    networks:
+      - my-network
+    depends_on:
+      - mongodb
 networks:
   my-network:
     driver: bridge
