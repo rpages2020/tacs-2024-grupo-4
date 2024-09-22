@@ -2,6 +2,8 @@ package tacs.grupo_4.entities;
 
 
 import java.util.List;
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,10 +22,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "usuarios")
 public class Usuario {
     @Id
-    private Integer id;
+    private UUID id;
     private String nombre;
     private String email;
-    private List<Ticket> tickets;
 
 
 }

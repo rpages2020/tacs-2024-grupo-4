@@ -8,7 +8,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 @Builder
 @Data
@@ -19,9 +21,12 @@ import java.time.LocalDate;
 @Setter
 public class Evento {
     @Id
-    private long id;
+    private UUID id;
     private String nombre;
-    private LocalDate fecha;
+    private LocalDateTime fecha;
+    private Ubicacion ubicacion;
+    private List<Sector> sectores;
+    private Boolean estaActivo;
 
 
 }

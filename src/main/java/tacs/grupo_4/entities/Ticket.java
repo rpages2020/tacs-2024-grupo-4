@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Builder
 @Data
@@ -20,10 +21,10 @@ import java.time.LocalDateTime;
 @Document
 public class Ticket {
     @Id
-    private Long id;
+    private UUID id;
     private Double precio;
-    private String ubicacion;
-    private Usuario usuario;
-    private LocalDateTime fechaYHora;
-
+    private Asiento asiento;
+    private LocalDateTime horaVenta;
+    private boolean estaActivo;
+    // Método de pago?
 }

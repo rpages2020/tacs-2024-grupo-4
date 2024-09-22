@@ -1,18 +1,27 @@
 package tacs.grupo_4.services;
 
+import org.springframework.transaction.annotation.Transactional;
+import tacs.grupo_4.entities.Asiento;
 import tacs.grupo_4.entities.Evento;
+import tacs.grupo_4.entities.Ticket;
+import tacs.grupo_4.exceptions.AsientoNotFoundException;
+import tacs.grupo_4.repositories.AsientoRepository;
 import tacs.grupo_4.repositories.EventoRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class EventoService {
 
-    private final EventoRepository eventoRepository;
 
-    public EventoService(EventoRepository eventoRepository) {
+    private final EventoRepository eventoRepository;
+    private final AsientoRepository asientoRepository;
+    public EventoService(EventoRepository eventoRepository, AsientoRepository asientoRepository) {
         this.eventoRepository = eventoRepository;
+        this.asientoRepository = asientoRepository;
     }
 
     public Evento crearEvento(Evento evento) {
@@ -23,19 +32,32 @@ public class EventoService {
         return eventoRepository.findAll();
     }
 
-    public Evento obtenerEventoPorId(String id) {
+    public Evento obtenerEventoPorId(UUID id) {
         return eventoRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Evento no encontrado"));
     }
 
-    public void eliminarEvento(String id) {
-        eventoRepository.deleteById(id);
+    public Evento cancelarEvento(UUID id) {
+        Evento eventoExistente = obtenerEventoPorId(id);
+        eventoExistente.setEstaActivo( ! eventoExistente.getEstaActivo());
+        return eventoRepository.save(eventoExistente);
     }
-
-    public Evento actualizarEvento(String id, Evento eventoActualizado) {
+    public Evento actualizarEvento(UUID id, Evento eventoActualizado) {
         Evento eventoExistente = obtenerEventoPorId(id);
         eventoExistente.setNombre(eventoActualizado.getNombre());
         eventoExistente.setFecha(eventoActualizado.getFecha());
         return eventoRepository.save(eventoExistente);
+    }
+
+    @Transactional
+    public Asiento reservarAsiento(UUID eventoId, UUID sectorId, String nroAsiento, UUID usuario) {
+        List<Asiento> asientos = asientoRepository.findByEventoIdAndSectorIdAndNroAsientoAndEstaReservado(eventoId, sectorId, nroAsiento, false);
+        if(asientos.isEmpty()) throw new AsientoNotFoundException();
+
+        Asiento asiento = asientos.get(0);
+        asiento.setEstaReservado(true);
+        asiento.setUsuario(usuario);
+        asiento.setReservadoEn(LocalDateTime.now());
+        return asientoRepository.save(asiento);
     }
 }

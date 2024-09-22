@@ -2,6 +2,7 @@ package tacs.grupo_4.controllers;
 
 import tacs.grupo_4.entities.Ticket;
 import tacs.grupo_4.entities.Usuario;
+import tacs.grupo_4.services.TicketServicio;
 import tacs.grupo_4.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,11 +17,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
-
+    @Autowired
+    private TicketServicio ticketService;
     @Autowired
     private UsuarioService usuarioService;
 
@@ -32,19 +35,13 @@ public class UsuarioController {
 
     @GetMapping("/{id}/tickets")
     public ResponseEntity<List<Ticket>> obtenerTicketsDeUsuario(@PathVariable String id) {
-        List<Ticket> tickets = usuarioService.obtenerTicketsDeUsuario(id);
+        List<Ticket> tickets = ticketService.obtenerTicketsPorUsuario(UUID.fromString(id));
         return new ResponseEntity<>(tickets, HttpStatus.OK);
-    }
-
-    @PostMapping("/{id}/tickets")
-    public ResponseEntity<Ticket> reservarTicket(@PathVariable String id, @RequestBody Ticket ticket) {
-        Ticket ticketReservado = usuarioService.reservarTicket(id, ticket);
-        return new ResponseEntity<>(ticketReservado, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}/tickets/{ticketId}")
     public ResponseEntity<Void> cancelarReserva(@PathVariable String id, @PathVariable String ticketId) {
-        usuarioService.cancelarReserva(id, ticketId);
+        ticketService.cancelarTicket(UUID.fromString(ticketId));
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
