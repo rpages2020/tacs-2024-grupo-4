@@ -8,7 +8,9 @@ import tacs.grupo_4.entities.Sector;
 import tacs.grupo_4.exceptions.AsientoNotFoundException;
 import tacs.grupo_4.repositories.AsientoRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class AsientoService {
@@ -22,11 +24,12 @@ public class AsientoService {
         asientoRepository.save(asiento);
     }
 
-    public void crearAsientos(Evento evento) {  // Logica para que se pueda establecer el nroAsiento?
+    public void crearAsientos(Evento evento) {
+        // Logica para que se pueda establecer el nroAsiento?
         List<Sector> sectores = evento.getSectores();
-        sectores.forEach( sector -> {
+        sectores.forEach(sector -> {
             List<Asiento> asientos = new ArrayList<>();
-            for(int i = 0; i < sector.getCapacidad(); i++) {
+            for (int i = 0; i < sector.getCapacidad(); i++) {
                 Asiento asiento = new Asiento(
                         UUID.randomUUID(),
                         "EJ-" + String.valueOf(i),

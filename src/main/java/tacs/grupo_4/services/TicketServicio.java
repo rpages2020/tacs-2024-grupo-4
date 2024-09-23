@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import tacs.grupo_4.repositories.UsuarioRepository;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 

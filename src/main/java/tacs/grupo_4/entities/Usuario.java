@@ -1,7 +1,4 @@
 package tacs.grupo_4.entities;
-
-
-import java.util.List;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;

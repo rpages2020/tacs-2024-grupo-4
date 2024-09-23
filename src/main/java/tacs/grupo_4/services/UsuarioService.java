@@ -2,7 +2,6 @@ package tacs.grupo_4.services;
 
 import tacs.grupo_4.entities.Ticket;
 import tacs.grupo_4.entities.Usuario;
-import tacs.grupo_4.repositories.TicketRepository;
 import tacs.grupo_4.repositories.UsuarioRepository;
 import org.springframework.stereotype.Service;
 

@@ -4,10 +4,7 @@ package tacs.grupo_4.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import tacs.grupo_4.entities.Asiento;
-import tacs.grupo_4.entities.Evento;
-import tacs.grupo_4.entities.Ticket;
-import tacs.grupo_4.entities.Usuario;
+import tacs.grupo_4.entities.*;
 import tacs.grupo_4.services.EventoService;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,15 +58,21 @@ public class EventoController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/{eventoId}/sector/{sectorId}/{asientoNro}")
+    @PutMapping("/{eventoId}/sector/{sectorId}/{asientoNro}")
     public ResponseEntity<Ticket> reservarAsiento(
             @PathVariable String eventoId,
             @PathVariable String sectorId,
             @PathVariable String asientoNro) {
 
         Usuario usuario = new Usuario(UUID.randomUUID(), "juan", "a@hola.com");
-        // TODO: Arriba iría algo como un getCurrentUserId cuando haya autenticacion.
+        // TOD0: Arriba iría algo como un getCurrentUserId cuando haya autenticacion.
         Asiento asiento = eventoService.reservarAsiento(UUID.fromString(eventoId), UUID.fromString(sectorId), asientoNro, usuario.getId());
         return new ResponseEntity<>(ticketService.crearTicketDeAsiento(asiento), HttpStatus.OK);
+    }
+    @PostMapping("/{eventoId}/sector/")
+    public ResponseEntity<Evento> crearSector(
+            @PathVariable String eventoId,
+            @RequestBody Sector sector) {
+        return new ResponseEntity<>(eventoService.crearSector(UUID.fromString(eventoId), sector), HttpStatus.OK);
     }
 }

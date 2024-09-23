@@ -1,10 +1,13 @@
 package tacs.grupo_4.entities;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -13,7 +16,8 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document
+//@Document
+//Sector nomás va a existir dentro del evento
 public class Sector {   // Platea alta, Primera fila
     @Id
     private UUID id;
