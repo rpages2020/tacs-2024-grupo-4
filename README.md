@@ -13,5 +13,11 @@ Click derecho + Build
 Alternativa:
 
     .\gradlew build
+    
 ### Docker Compose
     docker-compose up -d
+    
+### Telegram bot
+Es necesario tener un token de un bot de telegram (registrar bot con el FatherBot).
+
+Se pone en el src/main/resources/application.yaml.
