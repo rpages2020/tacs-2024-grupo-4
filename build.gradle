@@ -75,6 +75,11 @@ dependencies {
 		transitive = false
 	}
 	testImplementation('org.testcontainers:mysql')
+
+	//Telegram API
+	implementation 'org.telegram:telegrambots:6.5.0'
+	//WebFlux
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 }
 
 test {

@@ -11,3 +11,6 @@ spring:
       username: root
       password: P4ssw0rd!
 
+telegram:
+  bot:
+    token: TOKENDELBOT
