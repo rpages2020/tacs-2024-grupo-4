@@ -27,6 +27,11 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
+    @GetMapping("/telegram/{id}")
+    public ResponseEntity<Usuario> obtenerUsuarioDeTelegram(@PathVariable String id) {
+        Usuario usuario = usuarioService.obtenerUsuarioPorTelegramId(Long.getLong(id));
+        return new ResponseEntity<>(usuario, HttpStatus.OK);
+    }
     @PostMapping
     public ResponseEntity<Usuario> crearUsuario(@RequestBody Usuario usuario) {
         Usuario usuarioCreado = usuarioService.crearUsuario(usuario);

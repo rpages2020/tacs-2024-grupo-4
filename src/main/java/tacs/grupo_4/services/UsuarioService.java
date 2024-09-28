@@ -27,8 +27,12 @@ public class UsuarioService {
         return ticketService.obtenerTicketsPorUsuario(UUID.fromString(id));
     }
 
-    private Usuario obtenerUsuarioPorId(String id) {
+    public Usuario obtenerUsuarioPorId(String id) {
         return usuarioRepository.findById(UUID.fromString(id))
             .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    }
+
+    public Usuario obtenerUsuarioPorTelegramId(Long id) {
+        return usuarioRepository.findByTelegramUserId(id);
     }
 }

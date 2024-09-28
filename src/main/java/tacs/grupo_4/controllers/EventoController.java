@@ -68,7 +68,7 @@ public class EventoController {
             @PathVariable String sectorId,
             @PathVariable String asientoNro) {
 
-        Usuario usuario = new Usuario(UUID.randomUUID(), "juan", "a@hola.com");
+        Usuario usuario = new Usuario(UUID.randomUUID(), "juan", "a@hola.com", 1);
         // TOD0: Arriba iría algo como un getCurrentUserId cuando haya autenticacion.
         Asiento asiento = eventoService.reservarAsiento(UUID.fromString(eventoId), UUID.fromString(sectorId), asientoNro, usuario.getId());
         return new ResponseEntity<>(ticketService.crearTicketDeAsiento(asiento), HttpStatus.OK);

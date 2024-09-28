@@ -22,6 +22,7 @@ public class Usuario {
     private UUID id;
     private String nombre;
     private String email;
+    private long telegramUserId;
 
 
 }
