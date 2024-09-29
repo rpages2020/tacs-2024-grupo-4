@@ -10,5 +10,5 @@ import java.util.UUID;
 
 @Repository
 public interface UsuarioRepository extends MongoRepository<Usuario, UUID> {
-    public abstract Optional<Usuario> findByTelegramUserId(Long id);
+    Optional<Usuario> findByTelegramUserId(Long id);
 }

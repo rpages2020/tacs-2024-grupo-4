@@ -1,18 +1,14 @@
 package tacs.grupo_4.telegramBot;
 
-import jakarta.ws.rs.ext.ParamConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import tacs.grupo_4.telegramBot.handlers.UsuarioHandler;
-
-import java.util.UUID;
 
 @Service
 public class TelegramBot extends TelegramLongPollingBot {
@@ -60,9 +56,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                     • hola
                     • crearUsuario <'nombre'> <email>
             """;
-    private String bienvenida (String nombre) {
-        return "¡Hola " + nombre + "! Soy el TicketBot." +
-                " Puedes utilizar 'help' para ver las operaciones disponibles";
+    private String bienvenida(String nombre) {
+        return "¡Hola " + nombre + "! Soy el TicketBot."
+                + " Puedes utilizar 'help' para ver las operaciones disponibles";
     }
 
     public void enviarMensaje(String chatId, String text) {

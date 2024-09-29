@@ -13,4 +13,15 @@ spring:
 
 telegram:
   bot:
-    token: 6042310161:AAGVgUKPJmFckdOGgVi6O4mZUS1hWYI8u8k
+    token: TOKEN-ACA
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
+              index:
+                MongoPersistentEntityIndexCreator: DEBUG

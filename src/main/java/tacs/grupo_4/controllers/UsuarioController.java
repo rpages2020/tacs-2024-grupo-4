@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -35,8 +34,7 @@ public class UsuarioController {
         try {
             Usuario usuario = usuarioService.obtenerUsuarioPorTelegramId(Long.parseLong(id));
             return new ResponseEntity<>(usuario, HttpStatus.OK);
-        }
-        catch (UsuarioNotFoundException e) {
+        } catch (UsuarioNotFoundException e) {
             return new ResponseEntity<>(new Usuario(), HttpStatus.NOT_FOUND);
         }
 
@@ -47,8 +45,7 @@ public class UsuarioController {
         try {
             Usuario usuarioCreado = usuarioService.crearUsuario(usuario);
             return new ResponseEntity<>(usuario, HttpStatus.OK);
-        }
-        catch (UsuarioYaExisteException e) {
+        } catch (UsuarioYaExisteException e) {
             return new ResponseEntity<>(usuario, HttpStatus.CONFLICT);
         }
     }

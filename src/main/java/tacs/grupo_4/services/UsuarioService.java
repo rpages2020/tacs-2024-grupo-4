@@ -25,8 +25,7 @@ public class UsuarioService {
     public Usuario crearUsuario(Usuario usuario) {
         try {
             return usuarioRepository.save(usuario);
-        }
-        catch (DuplicateKeyException e) {
+        } catch (DuplicateKeyException e) {
             throw new UsuarioYaExisteException(usuario);
         }
     }
