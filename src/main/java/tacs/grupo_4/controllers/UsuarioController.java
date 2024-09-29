@@ -2,6 +2,8 @@ package tacs.grupo_4.controllers;
 
 import tacs.grupo_4.entities.Ticket;
 import tacs.grupo_4.entities.Usuario;
+import tacs.grupo_4.exceptions.UsuarioNotFoundException;
+import tacs.grupo_4.exceptions.UsuarioYaExisteException;
 import tacs.grupo_4.services.TicketServicio;
 import tacs.grupo_4.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -29,13 +32,25 @@ public class UsuarioController {
 
     @GetMapping("/telegram/{id}")
     public ResponseEntity<Usuario> obtenerUsuarioDeTelegram(@PathVariable String id) {
-        Usuario usuario = usuarioService.obtenerUsuarioPorTelegramId(Long.getLong(id));
-        return new ResponseEntity<>(usuario, HttpStatus.OK);
+        try {
+            Usuario usuario = usuarioService.obtenerUsuarioPorTelegramId(Long.parseLong(id));
+            return new ResponseEntity<>(usuario, HttpStatus.OK);
+        }
+        catch (UsuarioNotFoundException e) {
+            return new ResponseEntity<>(new Usuario(), HttpStatus.NOT_FOUND);
+        }
+
+
     }
     @PostMapping
     public ResponseEntity<Usuario> crearUsuario(@RequestBody Usuario usuario) {
-        Usuario usuarioCreado = usuarioService.crearUsuario(usuario);
-        return new ResponseEntity<>(usuarioCreado, HttpStatus.CREATED);
+        try {
+            Usuario usuarioCreado = usuarioService.crearUsuario(usuario);
+            return new ResponseEntity<>(usuario, HttpStatus.OK);
+        }
+        catch (UsuarioYaExisteException e) {
+            return new ResponseEntity<>(usuario, HttpStatus.CONFLICT);
+        }
     }
 
     @GetMapping("/{id}/tickets")

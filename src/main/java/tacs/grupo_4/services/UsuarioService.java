@@ -1,7 +1,10 @@
 package tacs.grupo_4.services;
 
+import com.mongodb.DuplicateKeyException;
 import tacs.grupo_4.entities.Ticket;
 import tacs.grupo_4.entities.Usuario;
+import tacs.grupo_4.exceptions.UsuarioNotFoundException;
+import tacs.grupo_4.exceptions.UsuarioYaExisteException;
 import tacs.grupo_4.repositories.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +23,12 @@ public class UsuarioService {
     }
 
     public Usuario crearUsuario(Usuario usuario) {
-        return usuarioRepository.save(usuario);
+        try {
+            return usuarioRepository.save(usuario);
+        }
+        catch (DuplicateKeyException e) {
+            throw new UsuarioYaExisteException(usuario);
+        }
     }
 
     public List<Ticket> obtenerTicketsDeUsuario(String id) {
@@ -29,10 +37,11 @@ public class UsuarioService {
 
     public Usuario obtenerUsuarioPorId(String id) {
         return usuarioRepository.findById(UUID.fromString(id))
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            .orElseThrow(UsuarioNotFoundException::new);
     }
 
     public Usuario obtenerUsuarioPorTelegramId(Long id) {
-        return usuarioRepository.findByTelegramUserId(id);
+        return usuarioRepository.findByTelegramUserId(id)
+                .orElseThrow(UsuarioNotFoundException::new);
     }
 }
