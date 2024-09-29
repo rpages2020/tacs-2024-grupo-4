@@ -1,6 +1,6 @@
 package tacs.grupo_4.services;
 
-import com.mongodb.DuplicateKeyException;
+import org.springframework.dao.DuplicateKeyException;
 import tacs.grupo_4.entities.Ticket;
 import tacs.grupo_4.entities.Usuario;
 import tacs.grupo_4.exceptions.UsuarioNotFoundException;

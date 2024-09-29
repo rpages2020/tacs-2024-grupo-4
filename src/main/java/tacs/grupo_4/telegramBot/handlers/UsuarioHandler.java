@@ -20,7 +20,7 @@ public class UsuarioHandler {
     }
 
     public String whoami(String[] mensaje, String chatId, Long telegramUserId) {
-        if (mensaje.length != 1) {
+        if (mensaje.length != 0) {
             return "No se esperaban parámetros";
         }
         String url = "http://localhost:8080/api/usuarios/telegram/" + telegramUserId;
@@ -44,15 +44,15 @@ public class UsuarioHandler {
     }
 
     public String crearUsuario(String[] mensaje, String chatId, Long telegramUserId) {
-        if (mensaje.length != 3) {
-            return "crearUsuario <'nombre'> <email>";
+        if (mensaje.length != 2) {
+            return "crearUsuario <nombre>,<email>";
         }
         String url = "http://localhost:8080/api/usuarios";
 
         Usuario usuario = Usuario.builder()
                 .id(UUID.randomUUID())
-                .nombre(mensaje[1].replace("'", ""))
-                .email(mensaje[2])
+                .nombre(mensaje[0].replace("'", ""))
+                .email(mensaje[1])
                 .telegramUserId(telegramUserId)
                 .build();
 

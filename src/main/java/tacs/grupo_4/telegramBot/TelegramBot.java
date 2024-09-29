@@ -34,14 +34,22 @@ public class TelegramBot extends TelegramLongPollingBot {
             Long telegramUserId = update.getMessage().getFrom().getId();
             String nombre = update.getMessage().getFrom().getFirstName();
 
-
-            String[] mensajePartido = messageText.split(" ", 50);
-            String comando = mensajePartido[0];
+            int primerEspacioIndex = messageText.indexOf(' ');
+            String comando;
+            String[] parametros;
+            if (primerEspacioIndex == -1) {
+                comando = messageText.toLowerCase();
+                parametros = new String[0];
+            } else {
+                comando = messageText.substring(0, primerEspacioIndex).toLowerCase();
+                String parametrosString = messageText.substring(primerEspacioIndex + 1);
+                parametros = parametrosString.split(",");
+            }
             String respuesta = switch (comando) {
                 case "hola"             ->      "chau";
                 case "help"             ->      helpMensaje;
-                case "whoami"           ->      usuarioHandler.whoami(mensajePartido, chatId, telegramUserId);
-                case "crearUsuario"     ->      usuarioHandler.crearUsuario(mensajePartido, chatId, telegramUserId);
+                case "whoami"           ->      usuarioHandler.whoami(parametros, chatId, telegramUserId);
+                case "crearusuario"     ->      usuarioHandler.crearUsuario(parametros, chatId, telegramUserId);
                 default                 ->      bienvenida(nombre);
             };
             if (!respuesta.isEmpty()) {
@@ -52,9 +60,9 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final String helpMensaje =
             """
                     Comandos disponibles:
-                    • whoami
+                    • crearUsuario <nombre>,<email>
                     • hola
-                    • crearUsuario <'nombre'> <email>
+                    • whoami
             """;
     private String bienvenida(String nombre) {
         return "¡Hola " + nombre + "! Soy el TicketBot."

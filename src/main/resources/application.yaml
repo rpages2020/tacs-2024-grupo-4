@@ -10,10 +10,11 @@ spring:
       additional-hosts: localhost
       username: root
       password: P4ssw0rd!
+      auto-index-creation: true
 
 telegram:
   bot:
-    token: TOKEN-ACA
+    token: TOKEN-VA-ACA
 
 logging:
   level:
