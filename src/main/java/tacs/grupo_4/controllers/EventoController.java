@@ -70,6 +70,9 @@ public class EventoController {
 
         Usuario usuario = new Usuario(UUID.randomUUID(), "juan", "a@hola.com", 1);
         // TOD0: Arriba iría algo como un getCurrentUserId cuando haya autenticacion.
+        // (Si es que hacemos un front que se autentique, sino
+        // podemos hacer que se reciba el id del usuario por parametro y que
+        // la api sea solo accessible por el bot)
         Asiento asiento = eventoService.reservarAsiento(UUID.fromString(eventoId), UUID.fromString(sectorId), asientoNro, usuario.getId());
         return new ResponseEntity<>(ticketService.crearTicketDeAsiento(asiento), HttpStatus.OK);
     }

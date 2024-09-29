@@ -14,7 +14,7 @@ spring:
 
 telegram:
   bot:
-    token: TOKEN-VA-ACA
+    token: ACA-VA-EL-TOKEN
 
 logging:
   level:

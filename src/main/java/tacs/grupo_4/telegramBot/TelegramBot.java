@@ -8,17 +8,21 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import tacs.grupo_4.telegramBot.handlers.EventoHandler;
 import tacs.grupo_4.telegramBot.handlers.UsuarioHandler;
 
 @Service
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final UsuarioHandler usuarioHandler;
+    private final EventoHandler eventoHandler;
     @Autowired
     public TelegramBot(@Value("${telegram.bot.token}") String botToken,
-                       @Lazy UsuarioHandler usuarioHandler) {
+                       @Lazy UsuarioHandler usuarioHandler,
+                       @Lazy EventoHandler eventoHandler) {
         super(botToken);  // non-deprecated constructor
         this.usuarioHandler = usuarioHandler;
+        this.eventoHandler = eventoHandler;
     }
 
     @Override
@@ -46,10 +50,12 @@ public class TelegramBot extends TelegramLongPollingBot {
                 parametros = parametrosString.split(",");
             }
             String respuesta = switch (comando) {
-                case "hola"             ->      "chau";
-                case "help"             ->      helpMensaje;
-                case "whoami"           ->      usuarioHandler.whoami(parametros, chatId, telegramUserId);
                 case "crearusuario"     ->      usuarioHandler.crearUsuario(parametros, chatId, telegramUserId);
+                case "crearevento"      ->      eventoHandler.crearEvento(parametros, chatId, telegramUserId);
+                case "ejemplos"         ->      ejemplos(chatId);
+                case "help"             ->      helpMensaje;
+                case "hola"             ->      "chau";
+                case "whoami"           ->      usuarioHandler.whoami(parametros, chatId, telegramUserId);
                 default                 ->      bienvenida(nombre);
             };
             if (!respuesta.isEmpty()) {
@@ -60,7 +66,9 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final String helpMensaje =
             """
                     Comandos disponibles:
+                    • crearEvento <nombre>,<aaaa-mm-ddThora:minuto:segundo>,<descripcionEvento>,<nombreUbicacion>,<direccion>,<capacidad>,<precio>";
                     • crearUsuario <nombre>,<email>
+                    • ejemplos
                     • hola
                     • whoami
             """;
@@ -69,10 +77,18 @@ public class TelegramBot extends TelegramLongPollingBot {
                 + " Puedes utilizar 'help' para ver las operaciones disponibles";
     }
 
-    public void enviarMensaje(String chatId, String text) {
+    public String ejemplos(String chatId) {
+        String mensaje;
+        mensaje = "crearEvento Eventardo,2025-09-20T00:00:00,Festival Azul,La Rural,Avenida Siempreviva,1000,150";
+        enviarMensaje(chatId, mensaje);
+        mensaje = "crearUsuario Juan Pablo,juan@juan.com";
+        enviarMensaje(chatId, mensaje);
+        return "";
+    }
+    public void enviarMensaje(String chatId, String texto) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
-        message.setText(text);
+        message.setText(texto);
 
         try {
             execute(message);

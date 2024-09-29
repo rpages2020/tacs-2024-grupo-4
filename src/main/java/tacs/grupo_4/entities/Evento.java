@@ -27,6 +27,8 @@ public class Evento {
     private Ubicacion ubicacion;
     private List<Sector> sectores;
     private Boolean estaActivo;
+    private String descripcion;
+    private UUID usuario;
 
 
 }

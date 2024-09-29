@@ -23,19 +23,12 @@ public class UsuarioHandler {
         if (mensaje.length != 0) {
             return "No se esperaban parámetros";
         }
-        String url = "http://localhost:8080/api/usuarios/telegram/" + telegramUserId;
 
-        Mono<String> responseMono = webClient.get()
-                .uri(url)
-                .retrieve()
-                .onStatus(status -> status.value() == 404, clientResponse -> {
-                    return Mono.just(new RuntimeException("No te juno perro."));
-                })
-                .bodyToMono(String.class);
+        Mono<Usuario> responseMono = findByTelegramId(telegramUserId);
 
         responseMono.subscribe(
                 response -> telegramBot.enviarMensaje(chatId,
-                        "Vos sos: \n" + response),
+                        "Vos sos: \n" + response.toString()),
                 error -> telegramBot.enviarMensaje(chatId,
                         "Hubo un error: " + error.getMessage())
         );
@@ -51,7 +44,7 @@ public class UsuarioHandler {
 
         Usuario usuario = Usuario.builder()
                 .id(UUID.randomUUID())
-                .nombre(mensaje[0].replace("'", ""))
+                .nombre(mensaje[0])
                 .email(mensaje[1])
                 .telegramUserId(telegramUserId)
                 .build();
@@ -73,5 +66,17 @@ public class UsuarioHandler {
         );
 
         return "";
+    }
+
+    public Mono<Usuario> findByTelegramId(Long telegramUserId) {
+        String url = "http://localhost:8080/api/usuarios/telegram/" + telegramUserId;
+
+        return webClient.get()
+                .uri(url)
+                .retrieve()
+                .onStatus(status -> status.value() == 404, clientResponse -> {
+                    return Mono.just(new RuntimeException("No te juno perro."));
+                })
+                .bodyToMono(Usuario.class);
     }
 }
