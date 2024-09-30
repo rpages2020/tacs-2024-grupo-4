@@ -40,7 +40,7 @@ public class UsuarioHandler {
         if (mensaje.length != 2) {
             return "crearUsuario <nombre>,<email>";
         }
-        String url = "http://localhost:8080/api/usuarios";
+        String url = telegramBot.getEnvBaseUrl() + ":8080/api/usuarios";
 
         Usuario usuario = Usuario.builder()
                 .id(UUID.randomUUID())
@@ -69,7 +69,7 @@ public class UsuarioHandler {
     }
 
     public Mono<Usuario> findByTelegramId(Long telegramUserId) {
-        String url = "http://localhost:8080/api/usuarios/telegram/" + telegramUserId;
+        String url = telegramBot.getEnvBaseUrl() + ":8080/api/usuarios/telegram/" + telegramUserId;
 
         return webClient.get()
                 .uri(url)

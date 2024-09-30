@@ -36,6 +36,10 @@ public class EventoService {
         return eventoRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Evento no encontrado"));
     }
+    public List<Evento> obtenerEventosPorUserId(UUID id) {
+        return eventoRepository.findByUsuario(id)
+                .orElseThrow(() -> new RuntimeException("Usuario sin eventos"));
+    }
     public Evento cancelarEvento(UUID id) {
         Evento eventoExistente = obtenerEventoPorId(id);
         eventoExistente.setEstaActivo(!eventoExistente.getEstaActivo());

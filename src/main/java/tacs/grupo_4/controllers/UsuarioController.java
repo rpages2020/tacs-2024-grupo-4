@@ -1,9 +1,11 @@
 package tacs.grupo_4.controllers;
 
+import tacs.grupo_4.entities.Evento;
 import tacs.grupo_4.entities.Ticket;
 import tacs.grupo_4.entities.Usuario;
 import tacs.grupo_4.exceptions.UsuarioNotFoundException;
 import tacs.grupo_4.exceptions.UsuarioYaExisteException;
+import tacs.grupo_4.services.EventoService;
 import tacs.grupo_4.services.TicketServicio;
 import tacs.grupo_4.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,8 @@ public class UsuarioController {
     private TicketServicio ticketService;
     @Autowired
     private UsuarioService usuarioService;
+    @Autowired
+    private EventoService eventoService;
 
     @GetMapping("/telegram/{id}")
     public ResponseEntity<Usuario> obtenerUsuarioDeTelegram(@PathVariable String id) {
@@ -60,5 +64,11 @@ public class UsuarioController {
     public ResponseEntity<Void> cancelarReserva(@PathVariable String id, @PathVariable String ticketId) {
         ticketService.cancelarTicket(UUID.fromString(ticketId));
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{id}/eventos")
+    public ResponseEntity<List<Evento>> obtenerEventosDeUsuario(@PathVariable String id) {
+        List<Evento> eventos = eventoService.obtenerEventosPorUserId(UUID.fromString(id));
+        return new ResponseEntity<>(eventos, HttpStatus.OK);
     }
 }

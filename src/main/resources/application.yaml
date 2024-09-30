@@ -6,7 +6,7 @@ spring:
   data:
     mongodb:
       authentication-database: admin
-      database: tac-grupo-4
+      database: tac_grupo_4
       additional-hosts: localhost
       username: root
       password: P4ssw0rd!
@@ -14,10 +14,11 @@ spring:
 
 telegram:
   bot:
-    token: ACA-VA-EL-TOKEN
+    token: ACA-EL-TOKEN
 
 logging:
   level:
+    #root: DEBUG
     org:
       springframework:
         data:

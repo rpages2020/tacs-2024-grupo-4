@@ -7,6 +7,7 @@ import tacs.grupo_4.entities.Evento;
 import tacs.grupo_4.entities.Sector;
 import tacs.grupo_4.entities.Ubicacion;
 import tacs.grupo_4.entities.Usuario;
+import tacs.grupo_4.exceptions.UsuarioNotFoundException;
 import tacs.grupo_4.telegramBot.TelegramBot;
 
 import java.time.LocalDateTime;
@@ -32,13 +33,15 @@ public class EventoHandler {
             return "crearEvento <nombre>,<aaaa-mm-ddThora:minuto:segundo>,<descripcionEvento>,<nombreUbicacion>,<direccion>,<capacidad>,<precio>";
         }
         Mono<Usuario> usuarioAsync = usuarioHandler.findByTelegramId(telegramUserId);
-        Usuario usuario = usuarioAsync.block();//Espero de forma sincronica
-        if(usuario == null) {
+        Usuario usuario;
+        try {
+            usuario = usuarioAsync.block(); //Espero de forma sincronica
+        } catch (UsuarioNotFoundException e) {
             telegramBot.enviarMensaje(chatId, "Acceso denegado");
             return "";
         }
 
-        String url = "http://localhost:8080/api/eventos";
+        String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos";
 
         Ubicacion ubicacion = Ubicacion.builder()
                 .id(UUID.randomUUID())
@@ -75,6 +78,35 @@ public class EventoHandler {
         responseMono.subscribe(
                 response -> telegramBot.enviarMensaje(chatId,
                         "Evento creado exitosamente: \n" + response),
+                error -> telegramBot.enviarMensaje(chatId,
+                        "Hubo un error: " + error.getMessage())
+        );
+
+        return "";
+    }
+
+    public String misEventos(String[] mensaje, String chatId, Long telegramUserId) {
+        if (mensaje.length != 0) {
+            return "No se esperaban parámetros";
+        }
+        Mono<Usuario> usuarioAsync = usuarioHandler.findByTelegramId(telegramUserId);
+        Usuario usuario;
+        try {
+            usuario = usuarioAsync.block(); //Espero de forma sincronica
+        } catch (UsuarioNotFoundException e) {
+            telegramBot.enviarMensaje(chatId, "Acceso denegado");
+            return "";
+        }
+
+        String url = telegramBot.getEnvBaseUrl() + ":8080/api/usuarios/" + usuario.getId() + "/eventos";
+        Mono<String> responseMono = webClient.get()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(String.class);
+
+        responseMono.subscribe(
+                response -> telegramBot.enviarMensaje(chatId,
+                        "Tus eventos son: \n" + response),
                 error -> telegramBot.enviarMensaje(chatId,
                         "Hubo un error: " + error.getMessage())
         );

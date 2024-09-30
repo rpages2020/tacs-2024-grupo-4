@@ -13,7 +13,6 @@ import tacs.grupo_4.telegramBot.handlers.UsuarioHandler;
 
 @Service
 public class TelegramBot extends TelegramLongPollingBot {
-
     private final UsuarioHandler usuarioHandler;
     private final EventoHandler eventoHandler;
     @Autowired
@@ -55,6 +54,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "ejemplos"         ->      ejemplos(chatId);
                 case "help"             ->      helpMensaje;
                 case "hola"             ->      "chau";
+                case "miseventos"       ->      eventoHandler.misEventos(parametros, chatId, telegramUserId);
                 case "whoami"           ->      usuarioHandler.whoami(parametros, chatId, telegramUserId);
                 default                 ->      bienvenida(nombre);
             };
@@ -66,10 +66,11 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final String helpMensaje =
             """
                     Comandos disponibles:
-                    • crearEvento <nombre>,<aaaa-mm-ddThora:minuto:segundo>,<descripcionEvento>,<nombreUbicacion>,<direccion>,<capacidad>,<precio>";
+                    • crearEvento <nombre>,<aaaa-mm-ddThora:minuto:segundo>,<descripcionEvento>,<nombreUbicacion>,<direccion>,<capacidad>,<precio>"
                     • crearUsuario <nombre>,<email>
                     • ejemplos
                     • hola
+                    • misEventos
                     • whoami
             """;
     private String bienvenida(String nombre) {
@@ -82,6 +83,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         mensaje = "crearEvento Eventardo,2025-09-20T00:00:00,Festival Azul,La Rural,Avenida Siempreviva,1000,150";
         enviarMensaje(chatId, mensaje);
         mensaje = "crearUsuario Juan Pablo,juan@juan.com";
+        enviarMensaje(chatId, mensaje);
+        mensaje = "hola";
+        enviarMensaje(chatId, mensaje);
+        mensaje = "misEventos";
+        enviarMensaje(chatId, mensaje);
+        mensaje = "whoami";
         enviarMensaje(chatId, mensaje);
         return "";
     }
@@ -96,4 +103,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             e.printStackTrace();
         }
     }
+    public String getEnvBaseUrl() {
+        return "http://localhost";
+    }
+
 }
