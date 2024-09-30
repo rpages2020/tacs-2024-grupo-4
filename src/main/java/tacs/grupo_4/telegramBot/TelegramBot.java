@@ -49,12 +49,14 @@ public class TelegramBot extends TelegramLongPollingBot {
                 parametros = parametrosString.split(",");
             }
             String respuesta = switch (comando) {
+                case "confirmarevento"  ->      eventoHandler.confirmarEvento(parametros, chatId, telegramUserId);
                 case "crearusuario"     ->      usuarioHandler.crearUsuario(parametros, chatId, telegramUserId);
                 case "crearevento"      ->      eventoHandler.crearEvento(parametros, chatId, telegramUserId);
                 case "ejemplos"         ->      ejemplos(chatId);
                 case "help"             ->      helpMensaje;
                 case "hola"             ->      "chau";
                 case "miseventos"       ->      eventoHandler.misEventos(parametros, chatId, telegramUserId);
+                case "reservar"         ->      eventoHandler.reservarAsientoEnSector(parametros, chatId, telegramUserId);
                 case "whoami"           ->      usuarioHandler.whoami(parametros, chatId, telegramUserId);
                 default                 ->      bienvenida(nombre);
             };
@@ -66,11 +68,13 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final String helpMensaje =
             """
                     Comandos disponibles:
+                    • confirmarEvento <eventoId>
                     • crearEvento <nombre>,<aaaa-mm-ddThora:minuto:segundo>,<descripcionEvento>,<nombreUbicacion>,<direccion>,<capacidad>,<precio>"
                     • crearUsuario <nombre>,<email>
                     • ejemplos
                     • hola
                     • misEventos
+                    • reservar <eventoId>,<sectorId>
                     • whoami
             """;
     private String bienvenida(String nombre) {

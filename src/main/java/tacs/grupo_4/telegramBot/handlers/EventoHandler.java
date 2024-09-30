@@ -60,7 +60,7 @@ public class EventoHandler {
                 .nombre(mensaje[0])
                 .fecha(LocalDateTime.parse(mensaje[1]))
                 .descripcion(mensaje[2])
-                .estaActivo(true)
+                .estaActivo(false) // Se activa cuando se confirma y se generan los asientos
                 .ubicacion(ubicacion)
                 .sectores(sectores)
                 .usuario(usuario.getId())
@@ -107,6 +107,89 @@ public class EventoHandler {
         responseMono.subscribe(
                 response -> telegramBot.enviarMensaje(chatId,
                         "Tus eventos son: \n" + response),
+                error -> telegramBot.enviarMensaje(chatId,
+                        "Hubo un error: " + error.getMessage())
+        );
+
+        return "";
+    }
+
+    public String eventos(String[] mensaje, String chatId) {
+        if (mensaje.length != 0) {
+            return "No se esperaban parámetros";
+        }
+
+        String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos";
+        Mono<String> responseMono = webClient.get()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(String.class);
+
+        responseMono.subscribe(
+                response -> telegramBot.enviarMensaje(chatId,
+                        "Los eventos son: \n" + response),
+                error -> telegramBot.enviarMensaje(chatId,
+                        "Hubo un error: " + error.getMessage())
+        );
+
+        return "";
+    }
+    public String reservarAsientoEnSector(String[] mensaje, String chatId, Long telegramUserId) {
+        if (mensaje.length != 2) {
+            return "reservar <eventoId>,<sectorId>";
+        } // No parece cómodo utilizar los id
+        Mono<Usuario> usuarioAsync = usuarioHandler.findByTelegramId(telegramUserId);
+        Usuario usuario;
+        try {
+            usuario = usuarioAsync.block(); //Espero de forma sincronica
+        } catch (UsuarioNotFoundException e) {
+            telegramBot.enviarMensaje(chatId, "Acceso denegado");
+            return "";
+        }
+
+        String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos/" + mensaje[0] + "/sector/" + mensaje[1] + "/usuario/" + usuario.getId();
+        Mono<String> responseMono = webClient.put()
+                .uri(url)
+                .retrieve()
+                .onStatus(status -> status.value() == 412, clientResponse -> {
+                    return Mono.just(new RuntimeException("No hay asientos disponibles en ese evento o sector."));
+                })
+                .onStatus(status -> status.value() == 500, clientResponse -> {
+                    return Mono.just(new RuntimeException("Parametros inválidos"));
+                })
+                .bodyToMono(String.class);
+
+        responseMono.subscribe(
+                response -> telegramBot.enviarMensaje(chatId,
+                        "Asiento reservado exitosamente: \n" + response),
+                error -> telegramBot.enviarMensaje(chatId,
+                        "Hubo un error: " + error.getMessage())
+        );
+
+        return "";
+    }
+    public String confirmarEvento(String[] mensaje, String chatId, Long telegramUserId) {
+        if (mensaje.length != 1) {
+            return "confirmarEvento <eventoId>";
+        } // No parece cómodo utilizar los id
+        Mono<Usuario> usuarioAsync = usuarioHandler.findByTelegramId(telegramUserId);
+        Usuario usuario;
+        try {
+            usuario = usuarioAsync.block(); //Espero de forma sincronica
+        } catch (UsuarioNotFoundException e) {
+            telegramBot.enviarMensaje(chatId, "Acceso denegado");
+            return "";
+        }
+
+        String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos/" + mensaje[0] + "/confirmar/" + usuario.getId();
+        Mono<String> responseMono = webClient.put()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(String.class);
+
+        responseMono.subscribe(
+                response -> telegramBot.enviarMensaje(chatId,
+                        "Se ha confirmado el evento: \n" + response),
                 error -> telegramBot.enviarMensaje(chatId,
                         "Hubo un error: " + error.getMessage())
         );
