@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import tacs.grupo_4.entities.Asiento;
-import tacs.grupo_4.entities.Usuario;
 import tacs.grupo_4.entities.Evento;
 import tacs.grupo_4.entities.Ticket;
 import tacs.grupo_4.entities.Sector;
