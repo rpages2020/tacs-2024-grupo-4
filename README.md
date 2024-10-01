@@ -8,10 +8,6 @@ Revisar Module Settings
 [Docker](https://docs.docker.com/get-started/get-docker/)
 
 ### Buildear
-Click derecho + Build
-
-Alternativa:
-
     .\gradlew build
     
 ### Docker Compose
@@ -21,3 +17,19 @@ Alternativa:
 Es necesario tener un token de un bot de telegram (registrar bot con el FatherBot).
 
 Se pone en el src/main/resources/application.yaml.
+
+### Debuggear API / bot
+Una vez hecho el compose, detener el contenedor de la API y ejecutar Grupo4Aplicacion.java
+
+Para subir cambios al contenedor, hacer el .\gradlew build y hacer un docker-compose up -d --build
+
+## Notas
+El flujo de la aplicación, de momento, es el siguiente:
+1) El usuario crea su cuenta que queda asociada a su cuenta de Telegram (crearUsuario)
+2) Se crea un evento (crearEvento)
+3) Se confirma el evento (confirmarEvento). En este punto se crean las entidades Asiento
+4) Se reservan asientos hasta que no haya disponibles (reservar)
+
+Por ahora el bot no permite crear eventos con múltiples sectores ni reservar asientos específicos (ej por número de asiento).
+
+Por ahora la API confía totalmente en las solicitudes del bot. Si la hacemos pública habría que agregar autenticación.
