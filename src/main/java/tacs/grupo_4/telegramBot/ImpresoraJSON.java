@@ -30,6 +30,7 @@ public class ImpresoraJSON {
                     Precio: %f
                     Estado: %s
                     ID: %s
+                    SectorId: %s
                 """.formatted(evento.getNombre(),
                         evento.getDescripcion(),
                         evento.getFecha(),
@@ -37,7 +38,8 @@ public class ImpresoraJSON {
                         evento.getSectores().getFirst().getCapacidad(),
                         evento.getSectores().getFirst().getPrecio(),
                         evento.getEstaConfirmado() ? "Confirmado" : "No confirmado",
-                        evento.getId());
+                        evento.getId(),
+                        evento.getSectores().getFirst().getId());
     }
 
     public static String imprimir(List<Evento> eventos) {

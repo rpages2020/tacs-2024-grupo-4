@@ -3,7 +3,6 @@ package tacs.grupo_4.telegramBot.handlers;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import tacs.grupo_4.entities.Evento;
 import tacs.grupo_4.entities.Usuario;
 import tacs.grupo_4.exceptions.UsuarioNotFoundException;
 import tacs.grupo_4.telegramBot.ImpresoraJSON;

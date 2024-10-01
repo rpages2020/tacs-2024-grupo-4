@@ -4,7 +4,11 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import tacs.grupo_4.entities.*;
+import tacs.grupo_4.entities.Usuario;
+import tacs.grupo_4.entities.Evento;
+import tacs.grupo_4.entities.Ticket;
+import tacs.grupo_4.entities.Ubicacion;
+import tacs.grupo_4.entities.Sector;
 import tacs.grupo_4.exceptions.UsuarioNotFoundException;
 import tacs.grupo_4.telegramBot.ImpresoraJSON;
 import tacs.grupo_4.telegramBot.TelegramBot;
@@ -101,7 +105,7 @@ public class EventoHandler {
         Mono<List<Evento>> responseMono = webClient.get()
                 .uri(url)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<Evento>>() {});
+                .bodyToMono(new ParameterizedTypeReference<List<Evento>>() { });
 
         responseMono.subscribe(
                 response -> telegramBot.enviarMensaje(chatId,
@@ -122,7 +126,7 @@ public class EventoHandler {
         Mono<List<Evento>> responseMono = webClient.get()
                 .uri(url)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<Evento>>() {});
+                .bodyToMono(new ParameterizedTypeReference<List<Evento>>() { });
 
         responseMono.subscribe(
                 response -> telegramBot.enviarMensaje(chatId,
