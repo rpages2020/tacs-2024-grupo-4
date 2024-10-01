@@ -1,13 +1,12 @@
 package tacs.grupo_4.telegramBot.handlers;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import tacs.grupo_4.entities.Evento;
-import tacs.grupo_4.entities.Sector;
-import tacs.grupo_4.entities.Ubicacion;
-import tacs.grupo_4.entities.Usuario;
+import tacs.grupo_4.entities.*;
 import tacs.grupo_4.exceptions.UsuarioNotFoundException;
+import tacs.grupo_4.telegramBot.ImpresoraJSON;
 import tacs.grupo_4.telegramBot.TelegramBot;
 
 import java.time.LocalDateTime;
@@ -60,24 +59,24 @@ public class EventoHandler {
                 .nombre(mensaje[0])
                 .fecha(LocalDateTime.parse(mensaje[1]))
                 .descripcion(mensaje[2])
-                .estaActivo(false) // Se activa cuando se confirma y se generan los asientos
+                .estaConfirmado(false) // Se activa cuando se confirma y se generan los asientos
                 .ubicacion(ubicacion)
                 .sectores(sectores)
                 .usuario(usuario.getId())
                 .build();
 
-        Mono<String> responseMono = webClient.post()
+        Mono<Evento> responseMono = webClient.post()
                 .uri(url)
                 .bodyValue(evento)
                 .retrieve()
                 .onStatus(status -> status.value() == 409, clientResponse -> {
                     return Mono.just(new RuntimeException("El evento ya existe."));
                 })
-                .bodyToMono(String.class);
+                .bodyToMono(Evento.class);
 
         responseMono.subscribe(
                 response -> telegramBot.enviarMensaje(chatId,
-                        "Evento creado exitosamente: \n" + response),
+                        "Evento creado exitosamente: \n" + ImpresoraJSON.imprimir(response)),
                 error -> telegramBot.enviarMensaje(chatId,
                         "Hubo un error: " + error.getMessage())
         );
@@ -99,14 +98,14 @@ public class EventoHandler {
         }
 
         String url = telegramBot.getEnvBaseUrl() + ":8080/api/usuarios/" + usuario.getId() + "/eventos";
-        Mono<String> responseMono = webClient.get()
+        Mono<List<Evento>> responseMono = webClient.get()
                 .uri(url)
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(new ParameterizedTypeReference<List<Evento>>() {});
 
         responseMono.subscribe(
                 response -> telegramBot.enviarMensaje(chatId,
-                        "Tus eventos son: \n" + response),
+                        "Tus eventos son: \n\n" + ImpresoraJSON.imprimir(response)),
                 error -> telegramBot.enviarMensaje(chatId,
                         "Hubo un error: " + error.getMessage())
         );
@@ -120,14 +119,14 @@ public class EventoHandler {
         }
 
         String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos";
-        Mono<String> responseMono = webClient.get()
+        Mono<List<Evento>> responseMono = webClient.get()
                 .uri(url)
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(new ParameterizedTypeReference<List<Evento>>() {});
 
         responseMono.subscribe(
                 response -> telegramBot.enviarMensaje(chatId,
-                        "Los eventos son: \n" + response),
+                        "Los eventos son: \n\n" + ImpresoraJSON.imprimir(response)),
                 error -> telegramBot.enviarMensaje(chatId,
                         "Hubo un error: " + error.getMessage())
         );
@@ -148,7 +147,7 @@ public class EventoHandler {
         }
 
         String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos/" + mensaje[0] + "/sector/" + mensaje[1] + "/usuario/" + usuario.getId();
-        Mono<String> responseMono = webClient.put()
+        Mono<Ticket> responseMono = webClient.put()
                 .uri(url)
                 .retrieve()
                 .onStatus(status -> status.value() == 412, clientResponse -> {
@@ -157,11 +156,11 @@ public class EventoHandler {
                 .onStatus(status -> status.value() == 500, clientResponse -> {
                     return Mono.just(new RuntimeException("Parametros inválidos"));
                 })
-                .bodyToMono(String.class);
+                .bodyToMono(Ticket.class);
 
         responseMono.subscribe(
                 response -> telegramBot.enviarMensaje(chatId,
-                        "Asiento reservado exitosamente: \n" + response),
+                        "Asiento reservado exitosamente: \n" + ImpresoraJSON.imprimir(response)),
                 error -> telegramBot.enviarMensaje(chatId,
                         "Hubo un error: " + error.getMessage())
         );
@@ -182,14 +181,14 @@ public class EventoHandler {
         }
 
         String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos/" + mensaje[0] + "/confirmar/" + usuario.getId();
-        Mono<String> responseMono = webClient.put()
+        Mono<Evento> responseMono = webClient.put()
                 .uri(url)
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(Evento.class);
 
         responseMono.subscribe(
                 response -> telegramBot.enviarMensaje(chatId,
-                        "Se ha confirmado el evento: \n" + response),
+                        "Se ha confirmado el evento: \n" + ImpresoraJSON.imprimir(response)),
                 error -> telegramBot.enviarMensaje(chatId,
                         "Hubo un error: " + error.getMessage())
         );

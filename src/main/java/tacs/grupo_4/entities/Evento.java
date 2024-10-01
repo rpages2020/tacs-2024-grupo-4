@@ -26,6 +26,7 @@ public class Evento {
     private LocalDateTime fecha;
     private Ubicacion ubicacion;
     private List<Sector> sectores;
+    private Boolean estaConfirmado;
     private Boolean estaActivo;
     private String descripcion;
     private UUID usuario;

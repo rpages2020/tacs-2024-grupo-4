@@ -44,7 +44,7 @@ public class EventoService {
     }
     public Evento cancelarEvento(UUID id) {
         Evento eventoExistente = obtenerEventoPorId(id);
-        eventoExistente.setEstaActivo(!eventoExistente.getEstaActivo());
+        eventoExistente.setEstaConfirmado(!eventoExistente.getEstaConfirmado());
         return eventoRepository.save(eventoExistente);
     }
     public Evento actualizarEvento(UUID id, Evento eventoActualizado) {
@@ -90,10 +90,11 @@ public class EventoService {
     public Evento confirmarEvento(UUID eventoId, UUID usuarioId) {
         Evento evento = eventoRepository.findById(eventoId)
                 .orElseThrow(EventoNotFoundException::new);
-        if (!usuarioId.equals(evento.getUsuario())  || evento.getEstaActivo()) {
+        if (!usuarioId.equals(evento.getUsuario())  || evento.getEstaConfirmado()) {
             throw new RuntimeException("Acceso denegado.");
         }
-        evento.setEstaActivo(true);
+        evento.setEstaConfirmado(true);
+        eventoRepository.save(evento);
         List<Asiento> asientos = new ArrayList<>();
         List<Sector> sectores = evento.getSectores();
         Asiento asiento;

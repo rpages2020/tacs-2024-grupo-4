@@ -3,7 +3,10 @@ package tacs.grupo_4.telegramBot.handlers;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import tacs.grupo_4.entities.Evento;
 import tacs.grupo_4.entities.Usuario;
+import tacs.grupo_4.exceptions.UsuarioNotFoundException;
+import tacs.grupo_4.telegramBot.ImpresoraJSON;
 import tacs.grupo_4.telegramBot.TelegramBot;
 
 import java.util.UUID;
@@ -28,17 +31,17 @@ public class UsuarioHandler {
 
         responseMono.subscribe(
                 response -> telegramBot.enviarMensaje(chatId,
-                        "Vos sos: \n" + response.toString()),
+                        ImpresoraJSON.imprimir(response)),
                 error -> telegramBot.enviarMensaje(chatId,
-                        "Hubo un error: " + error.getMessage())
+                        "Hubo un error: no tiene una cuenta")
         );
 
         return "";
     }
 
     public String crearUsuario(String[] mensaje, String chatId, Long telegramUserId) {
-        if (mensaje.length != 2) {
-            return "crearUsuario <nombre>,<email>";
+        if (mensaje.length != 3) {
+            return "crearUsuario <nombre>,<email>,<dni>";
         }
         String url = telegramBot.getEnvBaseUrl() + ":8080/api/usuarios";
 
@@ -46,21 +49,22 @@ public class UsuarioHandler {
                 .id(UUID.randomUUID())
                 .nombre(mensaje[0])
                 .email(mensaje[1])
+                .dni(Integer.parseInt(mensaje[2]))
                 .telegramUserId(telegramUserId)
                 .build();
 
-        Mono<String> responseMono = webClient.post()
+        Mono<Usuario> responseMono = webClient.post()
                 .uri(url)
                 .bodyValue(usuario)
                 .retrieve()
                 .onStatus(status -> status.value() == 409, clientResponse -> {
                     return Mono.just(new RuntimeException("El usuario ya existe."));
                 })
-                .bodyToMono(String.class);
+                .bodyToMono(Usuario.class);
 
         responseMono.subscribe(
                 response -> telegramBot.enviarMensaje(chatId,
-                        "Usuario creado exitosamente: \n" + response),
+                        "Usuario creado exitosamente\n" + ImpresoraJSON.imprimir(response)),
                 error -> telegramBot.enviarMensaje(chatId,
                         "Hubo un error: " + error.getMessage())
         );
@@ -75,7 +79,7 @@ public class UsuarioHandler {
                 .uri(url)
                 .retrieve()
                 .onStatus(status -> status.value() == 404, clientResponse -> {
-                    return Mono.just(new RuntimeException("No te juno perro."));
+                    return Mono.just(new UsuarioNotFoundException());
                 })
                 .bodyToMono(Usuario.class);
     }

@@ -53,6 +53,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "crearusuario"     ->      usuarioHandler.crearUsuario(parametros, chatId, telegramUserId);
                 case "crearevento"      ->      eventoHandler.crearEvento(parametros, chatId, telegramUserId);
                 case "ejemplos"         ->      ejemplos(chatId);
+                case "eventos"          ->      eventoHandler.eventos(parametros, chatId);
                 case "help"             ->      helpMensaje;
                 case "hola"             ->      "chau";
                 case "miseventos"       ->      eventoHandler.misEventos(parametros, chatId, telegramUserId);
@@ -70,8 +71,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                     Comandos disponibles:
                     • confirmarEvento <eventoId>
                     • crearEvento <nombre>,<aaaa-mm-ddThora:minuto:segundo>,<descripcionEvento>,<nombreUbicacion>,<direccion>,<capacidad>,<precio>"
-                    • crearUsuario <nombre>,<email>
+                    • crearUsuario <nombre>,<email>,<dni>
                     • ejemplos
+                    • eventos
                     • hola
                     • misEventos
                     • reservar <eventoId>,<sectorId>
@@ -86,7 +88,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         String mensaje;
         mensaje = "crearEvento Eventardo,2025-09-20T00:00:00,Festival Azul,La Rural,Avenida Siempreviva,1000,150";
         enviarMensaje(chatId, mensaje);
-        mensaje = "crearUsuario Juan Pablo,juan@juan.com";
+        mensaje = "crearUsuario Juan Pablo,juan@juan.com,12345678";
         enviarMensaje(chatId, mensaje);
         mensaje = "hola";
         enviarMensaje(chatId, mensaje);

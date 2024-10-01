@@ -26,6 +26,8 @@ public class Usuario {
     private String email;
     @Indexed(unique = true)
     private long telegramUserId;
+    @Indexed(unique = true)
+    private int dni;
 
 
 }
