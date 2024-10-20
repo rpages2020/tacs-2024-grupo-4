@@ -1,6 +1,10 @@
 package tacs.grupo_4.controllers;
 
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,59 +33,102 @@ public class EventoController {
 
     @Autowired
     private EventoService eventoService;
+
     @Autowired
     private TicketServicio ticketService;
 
+    @Operation(summary = "Crear un nuevo evento", description = "Permite a un administrador publicar un nuevo evento. Un evento tiene nombre, fecha, ubicaciones y cantidad de tickets por ubicación.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Evento creado exitosamente",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Evento.class)) }),
+            @ApiResponse(responseCode = "400", description = "Solicitud inválida", content = @Content)
+    })
     @PostMapping
     public ResponseEntity<Evento> crearEvento(@RequestBody Evento evento) {
+
         Evento eventoCreado = eventoService.crearEvento(evento);
         return new ResponseEntity<>(eventoCreado, HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Obtener todos los eventos", description = "Devuelve una lista de todos los eventos publicados.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de eventos obtenida exitosamente",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Evento.class)) })
+    })
     @GetMapping
     public ResponseEntity<List<Evento>> obtenerTodosLosEventos() {
         List<Evento> eventos = eventoService.obtenerTodosLosEventos();
         return new ResponseEntity<>(eventos, HttpStatus.OK);
     }
 
+    @Operation(summary = "Obtener un evento por ID", description = "Permite a los usuarios o administradores obtener detalles de un evento específico mediante su ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Evento encontrado exitosamente",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Evento.class)) }),
+            @ApiResponse(responseCode = "404", description = "Evento no encontrado", content = @Content)
+    })
     @GetMapping("/{id}")
     public ResponseEntity<Evento> obtenerEventoPorId(@PathVariable String id) {
         Evento evento = eventoService.obtenerEventoPorId(UUID.fromString(id));
         return new ResponseEntity<>(evento, HttpStatus.OK);
     }
 
+    @Operation(summary = "Actualizar un evento por ID", description = "Permite a un administrador actualizar los detalles de un evento específico.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Evento actualizado exitosamente",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Evento.class)) }),
+            @ApiResponse(responseCode = "404", description = "Evento no encontrado", content = @Content)
+    })
     @PutMapping("/{id}")
     public ResponseEntity<Evento> actualizarEvento(@PathVariable String id, @RequestBody Evento evento) {
         Evento eventoActualizado = eventoService.actualizarEvento(UUID.fromString(id), evento);
         return new ResponseEntity<>(eventoActualizado, HttpStatus.OK);
     }
 
+    @Operation(summary = "Eliminar un evento por ID", description = "Permite a un administrador cancelar o cerrar un evento, eliminando su disponibilidad.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Evento eliminado exitosamente", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Evento no encontrado", content = @Content)
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> cancelarEvento(@PathVariable String id) {
         eventoService.cancelarEvento(UUID.fromString(id));
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @Operation(summary = "Reservar un asiento", description = "Permite a un usuario reservar un asiento específico en un sector de un evento.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Asiento reservado exitosamente",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Ticket.class)) }),
+            @ApiResponse(responseCode = "404", description = "Asiento no encontrado", content = @Content)
+    })
     @PostMapping("/{eventoId}/sector/{sectorId}/{asientoNro}/{usuarioId}")
     public ResponseEntity<Ticket> reservarAsiento(
             @PathVariable String eventoId,
             @PathVariable String sectorId,
             @PathVariable String asientoNro,
             @PathVariable String usuarioId) {
-
-        // TOD0: en realidad ese usuario ID saldría de un JWT/Cookie
-        // Esto es seguro si solo el bot tiene acceso a la api
         Asiento asiento = eventoService.reservarAsiento(UUID.fromString(eventoId), UUID.fromString(sectorId), asientoNro, UUID.fromString(usuarioId));
         return new ResponseEntity<>(ticketService.crearTicketDeAsiento(asiento), HttpStatus.OK);
     }
+
+    @Operation(summary = "Reservar un asiento aleatorio", description = "Permite a un usuario reservar un asiento aleatorio en un sector de un evento.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Asiento reservado exitosamente",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Ticket.class)) }),
+            @ApiResponse(responseCode = "412", description = "No se pudo encontrar un asiento disponible", content = @Content)
+    })
     @PutMapping("/{eventoId}/sector/{sectorId}/usuario/{usuarioId}")
     public ResponseEntity<Ticket> reservarAsientoRandom(
             @PathVariable String eventoId,
             @PathVariable String sectorId,
             @PathVariable String usuarioId) {
-
-        // TOD0: en realidad ese usuario ID saldría de un JWT/Cookie
-        // Esto es seguro si solo el bot tiene acceso a la api
         try {
             Asiento asiento = eventoService.reservarAsientoRandom(UUID.fromString(eventoId), UUID.fromString(sectorId), UUID.fromString(usuarioId));
             return new ResponseEntity<>(ticketService.crearTicketDeAsiento(asiento), HttpStatus.OK);
@@ -89,17 +136,32 @@ public class EventoController {
             return new ResponseEntity<>(null, HttpStatus.PRECONDITION_FAILED);
         }
     }
+
+    @Operation(summary = "Crear un sector", description = "Permite a un administrador crear un nuevo sector dentro de un evento.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Sector creado exitosamente",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Evento.class)) }),
+            @ApiResponse(responseCode = "404", description = "Evento no encontrado", content = @Content)
+    })
     @PostMapping("/{eventoId}/sector/")
     public ResponseEntity<Evento> crearSector(
             @PathVariable String eventoId,
             @RequestBody Sector sector) {
         return new ResponseEntity<>(eventoService.crearSector(UUID.fromString(eventoId), sector), HttpStatus.OK);
     }
+
+    @Operation(summary = "Confirmar un evento", description = "Permite a un administrador confirmar un evento, cerrando la venta de tickets.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Evento confirmado exitosamente",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Evento.class)) }),
+            @ApiResponse(responseCode = "404", description = "Evento no encontrado", content = @Content)
+    })
     @PutMapping("/{eventoId}/confirmar/{usuarioId}")
     public ResponseEntity<Evento> confirmarEvento(
             @PathVariable String eventoId,
             @PathVariable String usuarioId) {
-
         return new ResponseEntity<>(eventoService.confirmarEvento(UUID.fromString(eventoId), UUID.fromString(usuarioId)), HttpStatus.OK);
     }
 }

@@ -43,4 +43,7 @@ public class UsuarioService {
         return usuarioRepository.findByTelegramUserId(id)
                 .orElseThrow(UsuarioNotFoundException::new);
     }
+    public List<Usuario> obtenerTodosLosUsuarios() {
+        return usuarioRepository.findAll();
+    }
 }
