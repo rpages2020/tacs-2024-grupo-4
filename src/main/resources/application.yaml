@@ -14,8 +14,7 @@ spring:
 
 telegram:
   bot:
-    token: 7839961443:AAHHkXoQ0HSu6icaj5DcmO5IoaVI1se5XN4
-
+    token: TOKEN
 logging:
   level:
     #root: DEBUG
