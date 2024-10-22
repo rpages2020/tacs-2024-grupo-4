@@ -8,7 +8,7 @@ Revisar Module Settings
 [Docker](https://docs.docker.com/get-started/get-docker/)
 
 ### Buildear
-    .\gradlew build
+    .\gradlew buildAll
     
 ### Docker Compose
     docker-compose up -d
