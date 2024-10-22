@@ -1,5 +1,6 @@
 package tacs.grupo_4.telegramBot.handlers;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -10,6 +11,7 @@ import tacs.grupo_4.telegramBot.TelegramBot;
 
 import java.util.UUID;
 
+@Profile("bot")
 @Component
 public class UsuarioHandler {
 

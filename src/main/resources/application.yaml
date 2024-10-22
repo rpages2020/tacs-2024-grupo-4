@@ -1,8 +1,15 @@
+# Common
 server:
   port: 8080
+
+#API
+---
 spring:
+  config:
+    activate:
+      on-profile: api
   application:
-    name: grupo-4
+    name: grupo-4-api
   data:
     mongodb:
       authentication-database: admin
@@ -11,10 +18,6 @@ spring:
       username: root
       password: P4ssw0rd!
       auto-index-creation: true
-
-telegram:
-  bot:
-    token: ACA-VA-EL-TOKEN
 
 logging:
   level:
@@ -27,3 +30,16 @@ logging:
               MongoTemplate: DEBUG
               index:
                 MongoPersistentEntityIndexCreator: DEBUG
+
+# BOT
+---
+spring:
+  config:
+    activate:
+      on-profile: bot
+  application:
+    name: grupo-4-bot
+
+telegram:
+  bot:
+    token: ACA EL TOKEN

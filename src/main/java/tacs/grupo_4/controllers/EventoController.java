@@ -2,6 +2,7 @@ package tacs.grupo_4.controllers;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import tacs.grupo_4.entities.Asiento;
@@ -22,7 +23,7 @@ import tacs.grupo_4.services.TicketServicio;
 
 import java.util.List;
 import java.util.UUID;
-
+@Profile("api")
 @RestController
 @RequestMapping("/api/eventos")
 public class EventoController {

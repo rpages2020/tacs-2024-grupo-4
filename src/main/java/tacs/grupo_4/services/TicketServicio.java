@@ -1,5 +1,6 @@
 package tacs.grupo_4.services;
 
+import org.springframework.context.annotation.Profile;
 import tacs.grupo_4.entities.Asiento;
 import tacs.grupo_4.entities.Ticket;
 import tacs.grupo_4.repositories.AsientoRepository;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@Profile("api")
 @Service
 public class TicketServicio {
 

@@ -3,6 +3,7 @@ package tacs.grupo_4.telegramBot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -11,6 +12,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import tacs.grupo_4.telegramBot.handlers.EventoHandler;
 import tacs.grupo_4.telegramBot.handlers.UsuarioHandler;
 
+@Profile("bot")
 @Service
 public class TelegramBot extends TelegramLongPollingBot {
     private final UsuarioHandler usuarioHandler;
@@ -110,7 +112,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
     public String getEnvBaseUrl() {
-        return "http://localhost";
+        return "http://grupo_4_api:8080";
     }
 
 }

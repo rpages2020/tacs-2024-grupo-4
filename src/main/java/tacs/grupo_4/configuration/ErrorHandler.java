@@ -1,6 +1,7 @@
 package tacs.grupo_4.configuration;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -17,6 +18,7 @@ import tacs.grupo_4.exceptions.ErrorResponseDTO;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+@Profile("api")
 @RestControllerAdvice
 @Slf4j
 public class ErrorHandler extends ResponseEntityExceptionHandler {

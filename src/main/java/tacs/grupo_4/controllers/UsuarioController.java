@@ -1,5 +1,6 @@
 package tacs.grupo_4.controllers;
 
+import org.springframework.context.annotation.Profile;
 import tacs.grupo_4.entities.Evento;
 import tacs.grupo_4.entities.Ticket;
 import tacs.grupo_4.entities.Usuario;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 import java.util.UUID;
-
+@Profile("api")
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioController {

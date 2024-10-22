@@ -1,3 +1,4 @@
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.3'
@@ -11,7 +12,7 @@ group = 'tac'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '21'
+	sourceCompatibility = '23'
 }
 
 configurations {
@@ -70,6 +71,9 @@ dependencies {
 	testImplementation 'org.apache.groovy:groovy-xml:4.0.22'
 	testImplementation 'org.spockframework:spock-core:2.4-M4-groovy-4.0'
 	testImplementation 'org.spockframework:spock-spring:2.4-M4-groovy-4.0'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.5.0'
 
 	testImplementation('com.athaydes:spock-reports:2.5.1-groovy-4.0') {
 		transitive = false
@@ -126,3 +130,18 @@ check {
 	dependsOn jacocoTestCoverageVerification
 }
 
+tasks.register('bootJarApi', BootJar) {
+	targetJavaVersion.set(JavaVersion.VERSION_23)
+	archiveBaseName = 'api-boot'
+	mainClass = 'tacs.grupo_4.Grupo4Application'
+	classpath = sourceSets.main.runtimeClasspath
+}
+tasks.register('bootJarBot', BootJar) {
+	targetJavaVersion.set(JavaVersion.VERSION_23)
+	archiveBaseName = 'bot-boot'
+	mainClass = 'tacs.grupo_4.BotApplication'
+	classpath = sourceSets.main.runtimeClasspath
+}
+task buildAll{
+	dependsOn bootJarApi, bootJarBot
+}

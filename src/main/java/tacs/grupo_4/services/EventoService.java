@@ -1,5 +1,6 @@
 package tacs.grupo_4.services;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.transaction.annotation.Transactional;
 import tacs.grupo_4.entities.Asiento;
 import tacs.grupo_4.entities.Evento;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Profile("api")
 @Service
 public class EventoService {
 
