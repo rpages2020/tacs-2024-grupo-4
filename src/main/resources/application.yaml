@@ -14,7 +14,7 @@ spring:
 
 telegram:
   bot:
-    token: ACA-VA-EL-TOKEN
+    token: 7839961443:AAHHkXoQ0HSu6icaj5DcmO5IoaVI1se5XN4
 
 logging:
   level:
@@ -27,3 +27,9 @@ logging:
               MongoTemplate: DEBUG
               index:
                 MongoPersistentEntityIndexCreator: DEBUG
+springdoc:
+  swagger-ui:
+    path: /api-docs
+    enabled: true
+  api-docs:
+    enabled: true

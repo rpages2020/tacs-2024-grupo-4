@@ -18,7 +18,11 @@ public class ImpresoraJSON {
                         usuario.getEmail(),
                         usuario.getDni());
     }
+
     public static String imprimir(Evento evento) {
+        if (evento.getSectores().isEmpty()) {
+            return "El evento no tiene sectores disponibles.";
+        }
         return
                 """
                 Datos del evento
@@ -35,11 +39,11 @@ public class ImpresoraJSON {
                         evento.getDescripcion(),
                         evento.getFecha(),
                         evento.getUbicacion().getNombre(),
-                        evento.getSectores().getFirst().getCapacidad(),
-                        evento.getSectores().getFirst().getPrecio(),
+                        evento.getSectores().get(0).getCapacidad(),  // Cambiado a get(0)
+                        evento.getSectores().get(0).getPrecio(),    // Cambiado a get(0)
                         evento.getEstaConfirmado() ? "Confirmado" : "No confirmado",
                         evento.getId(),
-                        evento.getSectores().getFirst().getId());
+                        evento.getSectores().get(0).getId());       // Cambiado a get(0)
     }
 
     public static String imprimir(List<Evento> eventos) {
