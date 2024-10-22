@@ -27,16 +27,16 @@ repositories {
 	mavenCentral()
 }
 
-checkstyle {
-	configFile = file("$rootDir/checkstyle/checkstyle.xml")
-	toolVersion = '10.12.2'
-}
-
-// copy {
-// 	from 'hooks/pre-commit','hooks/pre-push'
-// 	into '.git/hooks'
-// 	fileMode 0777
+// checkstyle {
+// 	configFile = file("$rootDir/checkstyle/checkstyle.xml")
+// 	toolVersion = '10.12.2'
 // }
+
+copy {
+	from 'hooks/pre-commit','hooks/pre-push'
+	into '.git/hooks'
+	fileMode 0777
+}
 
 dependencies {
 
