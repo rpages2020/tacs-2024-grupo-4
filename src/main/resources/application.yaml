@@ -4,6 +4,8 @@ server:
 
 #API
 ---
+server:
+  forward-headers-strategy: framework
 spring:
   config:
     activate:
@@ -42,4 +44,4 @@ spring:
 
 telegram:
   bot:
-    token: ACA EL TOKEN
+    token: bot token aca
