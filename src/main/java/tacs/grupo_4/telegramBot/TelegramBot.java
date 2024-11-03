@@ -112,7 +112,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
     public String getEnvBaseUrl() {
-        return "http://grupo_4_api";
+        return "http://grupo4api";
     }
 
 }

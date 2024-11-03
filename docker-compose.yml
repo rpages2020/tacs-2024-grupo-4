@@ -15,11 +15,11 @@ services:
     networks:
       - my-network
 
-  grupo_4_api:
+  grupo-4-api:
     build:
       context: .
       dockerfile: Dockerfile-api
-    container_name: grupo_4_api
+    container_name: grupo4api
     ports:
       - "8080:8080"
     environment:
