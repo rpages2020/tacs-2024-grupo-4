@@ -54,6 +54,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "confirmarevento"  ->      eventoHandler.confirmarEvento(parametros, chatId, telegramUserId);
                 case "crearusuario"     ->      usuarioHandler.crearUsuario(parametros, chatId, telegramUserId);
                 case "crearevento"      ->      eventoHandler.crearEvento(parametros, chatId, telegramUserId);
+                case "cancelarevento"  ->       eventoHandler.cancelarEvento(parametros, chatId, telegramUserId);
                 case "ejemplos"         ->      ejemplos(chatId);
                 case "eventos"          ->      eventoHandler.eventos(parametros, chatId);
                 case "help"             ->      helpMensaje;
@@ -61,6 +62,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "miseventos"       ->      eventoHandler.misEventos(parametros, chatId, telegramUserId);
                 case "reservar"         ->      eventoHandler.reservarAsientoEnSector(parametros, chatId, telegramUserId);
                 case "whoami"           ->      usuarioHandler.whoami(parametros, chatId, telegramUserId);
+                case "misreservas"      ->      usuarioHandler.misReservas(parametros, chatId, telegramUserId);
+                case "eliminarevento"   ->      eventoHandler.eliminarEvento(parametros, chatId, telegramUserId);
                 default                 ->      bienvenida(nombre);
             };
             if (!respuesta.isEmpty()) {
@@ -96,8 +99,15 @@ public class TelegramBot extends TelegramLongPollingBot {
         enviarMensaje(chatId, mensaje);
         mensaje = "misEventos";
         enviarMensaje(chatId, mensaje);
+        mensaje = "misEventos";
+        enviarMensaje(chatId, mensaje);
+        mensaje = "cancelarEvento";
+        enviarMensaje(chatId, mensaje);
+        mensaje = "eliminarEvento";
+        enviarMensaje(chatId, mensaje);
         mensaje = "whoami";
         enviarMensaje(chatId, mensaje);
+
         return "";
     }
     public void enviarMensaje(String chatId, String texto) {

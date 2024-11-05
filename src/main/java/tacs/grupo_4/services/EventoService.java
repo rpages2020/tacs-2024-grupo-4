@@ -23,6 +23,7 @@ public class EventoService {
 
     private final EventoRepository eventoRepository;
     private final AsientoRepository asientoRepository;
+
     public EventoService(EventoRepository eventoRepository, AsientoRepository asientoRepository) {
         this.eventoRepository = eventoRepository;
         this.asientoRepository = asientoRepository;
@@ -38,17 +39,14 @@ public class EventoService {
 
     public Evento obtenerEventoPorId(UUID id) {
         return eventoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Evento no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Evento no encontrado"));
     }
+
     public List<Evento> obtenerEventosPorUserId(UUID id) {
         return eventoRepository.findByUsuario(id)
                 .orElseThrow(() -> new RuntimeException("Usuario sin eventos"));
     }
-    public Evento cancelarEvento(UUID id) {
-        Evento eventoExistente = obtenerEventoPorId(id);
-        eventoExistente.setEstaConfirmado(!eventoExistente.getEstaConfirmado());
-        return eventoRepository.save(eventoExistente);
-    }
+
     public Evento actualizarEvento(UUID id, Evento eventoActualizado) {
         Evento eventoExistente = obtenerEventoPorId(id);
         eventoExistente.setNombre(eventoActualizado.getNombre());
@@ -63,7 +61,7 @@ public class EventoService {
             throw new AsientoNotFoundException();
         }
 
-        Asiento asiento = asientos.get(0);
+        Asiento asiento = asientos.getFirst();
         asiento.setEstaReservado(true);
         asiento.setUsuario(usuario);
         asiento.setReservadoEn(LocalDateTime.now());
@@ -92,7 +90,7 @@ public class EventoService {
     public Evento confirmarEvento(UUID eventoId, UUID usuarioId) {
         Evento evento = eventoRepository.findById(eventoId)
                 .orElseThrow(EventoNotFoundException::new);
-        if (!usuarioId.equals(evento.getUsuario())  || evento.getEstaConfirmado()) {
+        if (!usuarioId.equals(evento.getUsuario()) || evento.getEstaConfirmado()) {
             throw new RuntimeException("Acceso denegado.");
         }
         evento.setEstaConfirmado(true);
@@ -116,5 +114,20 @@ public class EventoService {
         }
         asientoRepository.insert(asientos);
         return evento;
+    }
+
+    public void cancelarEvento(UUID id, UUID usuarioId) {
+        Evento eventoExistente = obtenerEventoPorId(id);
+        if (eventoExistente.getUsuario().equals(usuarioId)) {
+            eventoExistente.setEstaActivo(false);
+        } // baja lógica
+        eventoRepository.save(eventoExistente);
+    }
+
+    public void eliminarEvento(UUID id, UUID usuarioId) {
+        Evento eventoExistente = obtenerEventoPorId(id);
+        if (eventoExistente.getUsuario().equals(usuarioId)) { // baja física
+            eventoRepository.delete(eventoExistente);
+        }
     }
 }

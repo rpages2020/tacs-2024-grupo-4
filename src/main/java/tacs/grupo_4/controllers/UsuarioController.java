@@ -48,7 +48,7 @@ public class UsuarioController {
     @PostMapping
     public ResponseEntity<Usuario> crearUsuario(@RequestBody Usuario usuario) {
         try {
-            Usuario usuarioCreado = usuarioService.crearUsuario(usuario);
+            usuarioService.crearUsuario(usuario);
             return new ResponseEntity<>(usuario, HttpStatus.OK);
         } catch (UsuarioYaExisteException e) {
             return new ResponseEntity<>(usuario, HttpStatus.CONFLICT);
@@ -72,4 +72,11 @@ public class UsuarioController {
         List<Evento> eventos = eventoService.obtenerEventosPorUserId(UUID.fromString(id));
         return new ResponseEntity<>(eventos, HttpStatus.OK);
     }
+
+    @GetMapping("/{id}/reservas")
+    public ResponseEntity<List<Evento>> obtenerReservasDeUsuario(@PathVariable String id) {
+        List<Evento> eventos = eventoService.obtenerEventosPorUserId(UUID.fromString(id));
+        return new ResponseEntity<>(eventos, HttpStatus.OK);
+    }
+
 }

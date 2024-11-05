@@ -29,6 +29,7 @@ public class ImpresoraJSON {
                     Capacidad: %d
                     Precio: %f
                     Estado: %s
+                    Activo: %s
                     ID: %s
                     SectorId: %s
                 """.formatted(evento.getNombre(),
@@ -38,11 +39,12 @@ public class ImpresoraJSON {
                         evento.getSectores().getFirst().getCapacidad(),
                         evento.getSectores().getFirst().getPrecio(),
                         evento.getEstaConfirmado() ? "Confirmado" : "No confirmado",
+                        evento.getEstaActivo() ? "Activo" : "No activo",
                         evento.getId(),
                         evento.getSectores().getFirst().getId());
     }
 
-    public static String imprimir(List<Evento> eventos) {
+    public static String imprimirEventos(List<Evento> eventos) {
         StringBuilder response = new StringBuilder();
         for (Evento evento : eventos) {
             response.append(imprimir(evento));
@@ -63,5 +65,14 @@ public class ImpresoraJSON {
                         ticket.getAsiento().getNroAsiento(),
                         ticket.getHoraVenta(),
                         ticket.getPrecio());
+    }
+
+    public static String imprimirTickets(List<Ticket> tickets) {
+        StringBuilder response = new StringBuilder();
+        for (Ticket ticket : tickets) {
+            response.append(imprimir(ticket));
+            response.append("\n\n");
+        }
+        return response.toString();
     }
 }

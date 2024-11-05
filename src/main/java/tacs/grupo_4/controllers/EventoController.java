@@ -23,6 +23,7 @@ import tacs.grupo_4.services.TicketServicio;
 
 import java.util.List;
 import java.util.UUID;
+
 @Profile("api")
 @RestController
 @RequestMapping("/api/eventos")
@@ -57,11 +58,6 @@ public class EventoController {
         return new ResponseEntity<>(eventoActualizado, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> cancelarEvento(@PathVariable String id) {
-        eventoService.cancelarEvento(UUID.fromString(id));
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
 
     @PostMapping("/{eventoId}/sector/{sectorId}/{asientoNro}/{usuarioId}")
     public ResponseEntity<Ticket> reservarAsiento(
@@ -75,6 +71,7 @@ public class EventoController {
         Asiento asiento = eventoService.reservarAsiento(UUID.fromString(eventoId), UUID.fromString(sectorId), asientoNro, UUID.fromString(usuarioId));
         return new ResponseEntity<>(ticketService.crearTicketDeAsiento(asiento), HttpStatus.OK);
     }
+
     @PutMapping("/{eventoId}/sector/{sectorId}/usuario/{usuarioId}")
     public ResponseEntity<Ticket> reservarAsientoRandom(
             @PathVariable String eventoId,
@@ -90,12 +87,14 @@ public class EventoController {
             return new ResponseEntity<>(null, HttpStatus.PRECONDITION_FAILED);
         }
     }
+
     @PostMapping("/{eventoId}/sector/")
     public ResponseEntity<Evento> crearSector(
             @PathVariable String eventoId,
             @RequestBody Sector sector) {
         return new ResponseEntity<>(eventoService.crearSector(UUID.fromString(eventoId), sector), HttpStatus.OK);
     }
+
     @PutMapping("/{eventoId}/confirmar/{usuarioId}")
     public ResponseEntity<Evento> confirmarEvento(
             @PathVariable String eventoId,
@@ -103,4 +102,19 @@ public class EventoController {
 
         return new ResponseEntity<>(eventoService.confirmarEvento(UUID.fromString(eventoId), UUID.fromString(usuarioId)), HttpStatus.OK);
     }
+
+    @PutMapping("/{id}/usuario/{usuarioId}")
+    public ResponseEntity<Void> cancelarEvento(@PathVariable String id, @PathVariable String usuarioId) {
+        System.out.println("LLEGA AL CONTROLLER EVENTO_ID: " + id + " Usuario: " + usuarioId);
+        eventoService.cancelarEvento(UUID.fromString(id), UUID.fromString(usuarioId));
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/{id}/usuario/{usuarioId}")
+    public ResponseEntity<Void> eliminarEvento(@PathVariable String id, @PathVariable String usuarioId) {
+        System.out.println("LLEGA AL CONTROLLER EVENTO_ID: " + id + " Usuario: " + usuarioId);
+        eventoService.eliminarEvento(UUID.fromString(id), UUID.fromString(usuarioId));
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 }

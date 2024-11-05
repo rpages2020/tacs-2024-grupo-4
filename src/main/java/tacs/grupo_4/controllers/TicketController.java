@@ -15,13 +15,16 @@ import java.util.UUID;
 
 @Profile("api")
 @RestController
-@RequestMapping("/api/tickets")
+@RequestMapping("/api/reservas")
 @Slf4j
 public class TicketController {
     @Autowired
     private TicketServicio ticketService;
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Ticket> cancelarTicket(@PathVariable String id) {
         return new ResponseEntity<>(ticketService.cancelarTicket(UUID.fromString(id)), HttpStatus.CREATED);
     }
+
+
 }
