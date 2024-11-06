@@ -10,6 +10,7 @@ import tacs.grupo_4.entities.Evento;
 import tacs.grupo_4.entities.Ticket;
 import tacs.grupo_4.entities.Sector;
 import tacs.grupo_4.exceptions.AsientoNotFoundException;
+import tacs.grupo_4.repositories.EventoRepository;
 import tacs.grupo_4.services.EventoService;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,6 +34,8 @@ public class EventoController {
     private EventoService eventoService;
     @Autowired
     private TicketServicio ticketService;
+    @Autowired
+    private EventoRepository eventoRepository;
 
     @PostMapping
     public ResponseEntity<Evento> crearEvento(@RequestBody Evento evento) {
@@ -59,33 +62,41 @@ public class EventoController {
     }
 
 
-    @PostMapping("/{eventoId}/sector/{sectorId}/{asientoNro}/{usuarioId}")
+    @PostMapping("/{eventoId}/sector/{sectorNombre}/{asientoNro}/{usuarioId}")
     public ResponseEntity<Ticket> reservarAsiento(
             @PathVariable String eventoId,
-            @PathVariable String sectorId,
+            @PathVariable String sectorNombre,
             @PathVariable String asientoNro,
             @PathVariable String usuarioId) {
 
         // TOD0: en realidad ese usuario ID saldría de un JWT/Cookie
         // Esto es seguro si solo el bot tiene acceso a la api
-        Asiento asiento = eventoService.reservarAsiento(UUID.fromString(eventoId), UUID.fromString(sectorId), asientoNro, UUID.fromString(usuarioId));
+        Asiento asiento = eventoService.reservarAsiento(UUID.fromString(eventoId), sectorNombre, asientoNro, UUID.fromString(usuarioId));
         return new ResponseEntity<>(ticketService.crearTicketDeAsiento(asiento), HttpStatus.OK);
     }
 
-    @PutMapping("/{eventoId}/sector/{sectorId}/usuario/{usuarioId}")
+    @PutMapping("/{eventoId}/sector/{sectorNombre}/usuario/{usuarioId}")
     public ResponseEntity<Ticket> reservarAsientoRandom(
             @PathVariable String eventoId,
-            @PathVariable String sectorId,
+            @PathVariable String sectorNombre,
             @PathVariable String usuarioId) {
 
         // TOD0: en realidad ese usuario ID saldría de un JWT/Cookie
         // Esto es seguro si solo el bot tiene acceso a la api
-        try {
-            Asiento asiento = eventoService.reservarAsientoRandom(UUID.fromString(eventoId), UUID.fromString(sectorId), UUID.fromString(usuarioId));
-            return new ResponseEntity<>(ticketService.crearTicketDeAsiento(asiento), HttpStatus.OK);
-        } catch (AsientoNotFoundException e) {
-            return new ResponseEntity<>(null, HttpStatus.PRECONDITION_FAILED);
+        if (eventoActivo(eventoId)) {
+            try {
+                Asiento asiento = eventoService.reservarAsientoRandom(UUID.fromString(eventoId), sectorNombre, UUID.fromString(usuarioId));
+                return new ResponseEntity<>(ticketService.crearTicketDeAsiento(asiento), HttpStatus.OK);
+            } catch (AsientoNotFoundException e) {
+                return new ResponseEntity<>(null, HttpStatus.PRECONDITION_FAILED);
+            }
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
         }
+    }
+
+    private boolean eventoActivo(String eventoId) {
+        return eventoRepository.findById(UUID.fromString(eventoId)).get().getEstaActivo();
     }
 
     @PostMapping("/{eventoId}/sector/")

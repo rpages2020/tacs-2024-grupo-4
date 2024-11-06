@@ -13,5 +13,7 @@ import java.util.UUID;
 @Repository
 public interface AsientoRepository extends MongoRepository<Asiento, UUID> {
     List<Asiento> findByEventoIdAndSectorIdAndNroAsientoAndEstaReservado(UUID eventoId, UUID sectorId, String nroAsiento, Boolean estaReservado);
-    Optional<Asiento> findFirstByEstaReservadoAndEventoIdAndSector_Id(boolean estaReservado, UUID eventoId, UUID sectorId);
+    Optional<Asiento> findFirstByEstaReservadoAndEventoIdAndSectorNombre(boolean estaReservado, UUID eventoId, String sectorNombre);
+
+    List<Asiento> findByEventoIdAndSectorNombreAndNroAsientoAndEstaReservado(UUID eventoId, String sectorNombre, String nroAsiento, boolean b);
 }

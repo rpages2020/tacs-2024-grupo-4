@@ -33,13 +33,14 @@ public class EventoHandler {
     }
 
     public String crearEvento(String[] mensaje, String chatId, Long telegramUserId) {
-        // Limito las funcionalidades desde el bot: no se puede tener multiples sectores
-        if (mensaje.length != 7) {
-            return "crearEvento <nombre>,<aaaa-mm-ddThora:minuto:segundo>,<descripcionEvento>,<nombreUbicacion>,<direccion>,<capacidad>,<precio>";
+        // Comprobar que el mensaje tiene al menos los datos básicos + un sector
+        if (mensaje.length < 7 || (mensaje.length - 5) % 3 != 0) {
+            return "Lo sentimos, formato incorrecto! \nUtiliza:\ncrearEvento <nombre>,<aaaa-mm-ddThora:minuto:segundo>,<descripcionEvento>,<nombreUbicacion>,<direccion>,<nombreSector1>,<capacidad1>,<precio1>,<nombreSector2>,<capacidad2>,<precio2>,...";
+
         }
+
         Usuario usuario = verificarUsusario(chatId, telegramUserId);
         if (usuario != null) {
-
             String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos";
 
             Ubicacion ubicacion = Ubicacion.builder()
@@ -47,13 +48,20 @@ public class EventoHandler {
                     .nombre(mensaje[3])
                     .direccion(mensaje[4])
                     .build();
-            Sector sector = Sector.builder()
-                    .id(UUID.randomUUID())
-                    .capacidad(Long.valueOf(mensaje[5]))
-                    .precio(Double.valueOf(mensaje[6]))
-                    .build();
+
+            // Crear la lista de sectores
             List<Sector> sectores = new ArrayList<>();
-            sectores.add(sector);
+            for (int i = 5; i < mensaje.length; i += 3) {
+                Sector sector = Sector.builder()
+                        .id(UUID.randomUUID())
+                        .nombre(mensaje[i])                      // Nombre del sector
+                        .capacidadTotal(Integer.valueOf(mensaje[i + 1])) // CapacidadTotal
+                        .precio(Double.valueOf(mensaje[i + 2]))  // Precio del ticket
+                        .reservas(0) //ventas
+                        .build();
+                sectores.add(sector);
+            }
+
             Evento evento = Evento.builder()
                     .id(UUID.randomUUID())
                     .nombre(mensaje[0])
@@ -66,6 +74,7 @@ public class EventoHandler {
                     .estaActivo(true)
                     .build();
 
+            // Enviar solicitud de creación de evento
             Mono<Evento> responseMono = webClient.post()
                     .uri(url)
                     .bodyValue(evento)
@@ -75,6 +84,7 @@ public class EventoHandler {
                     })
                     .bodyToMono(Evento.class);
 
+            // Suscribirse para enviar mensajes de confirmación o error
             responseMono.subscribe(
                     response -> telegramBot.enviarMensaje(chatId,
                             "Evento creado exitosamente: \n" + ImpresoraJSON.imprimir(response)),
@@ -85,6 +95,7 @@ public class EventoHandler {
 
         return "";
     }
+
 
     public String misEventos(String[] mensaje, String chatId, Long telegramUserId) {
         if (mensaje.length != 0) {
@@ -102,7 +113,7 @@ public class EventoHandler {
 
             responseMono.subscribe(
                     response -> telegramBot.enviarMensaje(chatId,
-                            "Tus eventos son: \n\n" + ImpresoraJSON.imprimirEventos(response)),
+                            "Tus eventos son: \n\n" + ImpresoraJSON.imprimirEventosYEstadisticas(response)),
                     error -> telegramBot.enviarMensaje(chatId,
                             "Hubo un error: " + error.getMessage())
             );
@@ -135,36 +146,32 @@ public class EventoHandler {
 
     public String reservarAsientoEnSector(String[] mensaje, String chatId, Long telegramUserId) {
         if (mensaje.length != 2) {
-            return "reservar <eventoId>,<sectorId>";
-        } // No parece cómodo utilizar los id
-        Mono<Usuario> usuarioAsync = usuarioHandler.findByTelegramId(telegramUserId);
-        Usuario usuario;
-        try {
-            usuario = usuarioAsync.block(); //Espero de forma sincronica
-        } catch (UsuarioNotFoundException e) {
-            telegramBot.enviarMensaje(chatId, "Acceso denegado");
-            return "";
+            return "reservar <eventoId>,<nombreSector>";
         }
+        Usuario usuario = verificarUsusario(chatId, telegramUserId);
+        if (usuario != null) {
 
-        String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos/" + mensaje[0] + "/sector/" + mensaje[1] + "/usuario/" + usuario.getId();
-        Mono<Ticket> responseMono = webClient.put()
-                .uri(url)
-                .retrieve()
-                .onStatus(status -> status.value() == 412, clientResponse -> {
-                    return Mono.just(new RuntimeException("No hay asientos disponibles en ese evento o sector."));
-                })
-                .onStatus(status -> status.value() == 500, clientResponse -> {
-                    return Mono.just(new RuntimeException("Parametros inválidos"));
-                })
-                .bodyToMono(Ticket.class);
+            String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos/" + mensaje[0] + "/sector/" + mensaje[1] + "/usuario/" + usuario.getId();
+            Mono<Ticket> responseMono = webClient.put()
+                    .uri(url)
+                    .retrieve()
+                    .onStatus(status -> status.value() == 412, clientResponse -> {
+                        return Mono.just(new RuntimeException("No hay asientos disponibles en ese evento o sector."));
+                    }).onStatus(status -> status.value() == 409, clientResponse -> {
+                        return Mono.just(new RuntimeException("El evento ya no esta disponible"));
+                    })
+                    .onStatus(status -> status.value() == 500, clientResponse -> {
+                        return Mono.just(new RuntimeException("Parametros inválidos"));
+                    })
+                    .bodyToMono(Ticket.class);
 
-        responseMono.subscribe(
-                response -> telegramBot.enviarMensaje(chatId,
-                        "Asiento reservado exitosamente: \n" + ImpresoraJSON.imprimir(response)),
-                error -> telegramBot.enviarMensaje(chatId,
-                        "Hubo un error: " + error.getMessage())
-        );
-
+            responseMono.subscribe(
+                    response -> telegramBot.enviarMensaje(chatId,
+                            "Asiento reservado exitosamente: \n" + ImpresoraJSON.imprimir(response)),
+                    error -> telegramBot.enviarMensaje(chatId,
+                            "Hubo un error: " + error.getMessage())
+            );
+        }
         return "";
     }
 

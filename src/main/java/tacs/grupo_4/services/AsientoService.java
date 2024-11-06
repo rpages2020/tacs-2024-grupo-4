@@ -31,7 +31,7 @@ public class AsientoService {
         List<Sector> sectores = evento.getSectores();
         sectores.forEach(sector -> {
             List<Asiento> asientos = new ArrayList<>();
-            for (int i = 0; i < sector.getCapacidad(); i++) {
+            for (int i = 0; i < sector.getCapacidadTotal(); i++) {
                 Asiento asiento = new Asiento(
                         UUID.randomUUID(),
                         "EJ-" + String.valueOf(i),

@@ -75,13 +75,13 @@ public class TelegramBot extends TelegramLongPollingBot {
             """
                     Comandos disponibles:
                     • confirmarEvento <eventoId>
-                    • crearEvento <nombre>,<aaaa-mm-ddThora:minuto:segundo>,<descripcionEvento>,<nombreUbicacion>,<direccion>,<capacidad>,<precio>"
+                    • crearEvento <nombre>,<aaaa-mm-ddThora:minuto:segundo>,<descripcionEvento>,<nombreUbicacion>,<direccion>,<nombreSector1>,<capacidad1>,<precio1>,<nombreSector2>,<capacidad2>,<precio2>,...
                     • crearUsuario <nombre>,<email>,<dni>
                     • ejemplos
                     • eventos
                     • hola
                     • misEventos
-                    • reservar <eventoId>,<sectorId>
+                    • reservar <eventoId>,<nombreSector>
                     • whoami
             """;
     private String bienvenida(String nombre) {
@@ -91,7 +91,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     public String ejemplos(String chatId) {
         String mensaje;
-        mensaje = "crearEvento Eventardo,2025-09-20T00:00:00,Festival Azul,La Rural,Avenida Siempreviva,1000,150";
+        mensaje = "crearEvento Eventardo,2025-09-20T00:00:00,Festival Azul,La Rural,Avenida Siempreviva,Campo,1000,150,Platea Alta,200,200";
         enviarMensaje(chatId, mensaje);
         mensaje = "crearUsuario Juan Pablo,juan@juan.com,12345678";
         enviarMensaje(chatId, mensaje);

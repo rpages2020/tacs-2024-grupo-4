@@ -55,8 +55,8 @@ public class EventoService {
     }
 
     @Transactional
-    public Asiento reservarAsiento(UUID eventoId, UUID sectorId, String nroAsiento, UUID usuario) {
-        List<Asiento> asientos = asientoRepository.findByEventoIdAndSectorIdAndNroAsientoAndEstaReservado(eventoId, sectorId, nroAsiento, false);
+    public Asiento reservarAsiento(UUID eventoId, String sectorNombre, String nroAsiento, UUID usuario) {
+        List<Asiento> asientos = asientoRepository.findByEventoIdAndSectorNombreAndNroAsientoAndEstaReservado(eventoId, sectorNombre, nroAsiento, false);
         if (asientos.isEmpty()) {
             throw new AsientoNotFoundException();
         }
@@ -78,13 +78,20 @@ public class EventoService {
     }
 
     @Transactional
-    public Asiento reservarAsientoRandom(UUID evento, UUID sector, UUID usuario) {
-        Asiento asiento = asientoRepository.findFirstByEstaReservadoAndEventoIdAndSector_Id(false, evento, sector)
+    public Asiento reservarAsientoRandom(UUID evento, String sectorNombre, UUID usuario) {
+        Asiento asiento = asientoRepository.findFirstByEstaReservadoAndEventoIdAndSectorNombre(false, evento, sectorNombre)
                 .orElseThrow(AsientoNotFoundException::new);
         asiento.setEstaReservado(true);
         asiento.setUsuario(usuario);
         asiento.setReservadoEn(LocalDateTime.now());
+        this.sumarReserva(evento, sectorNombre);
         return asientoRepository.save(asiento);
+    }
+
+    public void sumarReserva(UUID eventoId, String nombreSector) {
+        Evento evento = eventoRepository.findById(eventoId).orElseThrow(() -> new RuntimeException("Evento no encontrado"));
+        evento.sumarVentaEnSector(nombreSector);
+        eventoRepository.save(evento);
     }
 
     public Evento confirmarEvento(UUID eventoId, UUID usuarioId) {
@@ -100,7 +107,7 @@ public class EventoService {
         Asiento asiento;
         // Se puede agregar un batch size para trabajar con tamaños grandes
         for (Sector sector : sectores) {
-            for (int i = 0; i < sector.getCapacidad(); i++) {
+            for (int i = 0; i < sector.getCapacidadTotal(); i++) {
                 asiento = Asiento.builder()
                         .id(UUID.randomUUID())
                         .nroAsiento(String.valueOf(i))
