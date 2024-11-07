@@ -26,5 +26,7 @@ public class Ticket {
     private Asiento asiento;
     private LocalDateTime horaVenta;
     private boolean estaActivo;
-    // Método de pago?
+    private String eventoNombre;
+    private String sectorNombre;
+
 }

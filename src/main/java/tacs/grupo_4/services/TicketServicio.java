@@ -56,7 +56,9 @@ public class TicketServicio {
                 asiento.getSector().getPrecio(),
                 asiento,
                 LocalDateTime.now(),
-                true
+                true,
+                asiento.getEventoNombre(),
+                asiento.sectorNombre()
                 );
         return ticketRepository.insert(ticket);
     }

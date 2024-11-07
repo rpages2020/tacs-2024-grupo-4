@@ -114,6 +114,7 @@ public class EventoService {
                         .sector(sector)
                         .estaReservado(false)
                         .eventoId(eventoId)
+                        .eventoNombre(evento.getNombre())
                         .usuario(usuarioId)
                         .build();
                 asientos.add(asiento);

@@ -28,8 +28,13 @@ public class Asiento {      // Butaca B25, Persona 14 en sector X
     private LocalDateTime reservadoEn;
     private Sector sector;
     private UUID eventoId;
+    private String eventoNombre;
 
     public void sumarVenta() {
         this.sector.sumarVenta();
+    }
+
+    public String sectorNombre() {
+        return this.sector.getNombre();
     }
 }

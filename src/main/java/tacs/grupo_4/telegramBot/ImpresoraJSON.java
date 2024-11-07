@@ -77,11 +77,13 @@ public class ImpresoraJSON {
         return
                 """
                         Ticket
-                            Evento ID: %s
+                            Evento : %s
+                            Sector : %s
                             Número de Asiento: %s
                             Fecha: %s
                             Precio: %f
-                        """.formatted(ticket.getAsiento().getEventoId(),
+                        """.formatted(ticket.getEventoNombre(),
+                        ticket.getSectorNombre(),
                         ticket.getAsiento().getNroAsiento(),
                         ticket.getHoraVenta(),
                         ticket.getPrecio());
