@@ -3,6 +3,7 @@ package tacs.grupo_4.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import tacs.grupo_4.entities.Asiento;
@@ -89,6 +90,8 @@ public class EventoController {
                 return new ResponseEntity<>(ticketService.crearTicketDeAsiento(asiento), HttpStatus.OK);
             } catch (AsientoNotFoundException e) {
                 return new ResponseEntity<>(null, HttpStatus.PRECONDITION_FAILED);
+            } catch (OptimisticLockingFailureException e) {
+                return new ResponseEntity<>(null, HttpStatus.CONFLICT);
             }
         } else {
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
