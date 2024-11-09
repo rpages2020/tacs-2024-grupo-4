@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
@@ -29,6 +30,9 @@ public class Asiento {      // Butaca B25, Persona 14 en sector X
     private Sector sector;
     private UUID eventoId;
     private String eventoNombre;
+
+    @Version
+    private Long version;
 
     public void sumarVenta() {
         this.sector.sumarVenta();

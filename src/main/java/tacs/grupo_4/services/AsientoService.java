@@ -40,7 +40,8 @@ public class AsientoService {
                         null,
                         sector,
                         evento.getId(),
-                        evento.getNombre()
+                        evento.getNombre(),
+                        null
                 );
                 asientos.add(asiento);
             }
