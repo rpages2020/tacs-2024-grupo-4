@@ -29,7 +29,7 @@ public class Sector {   // Platea alta, Primera fila
     //private String descripcion; //no se usa
 
     public String imprimite() {
-        return "\n Nombre: " + nombre + "\n Tikcets Diponibles: " + capacidadRestante() + "\n Precio: " + precio + "\n";
+        return "\n Nombre: " + nombre + "\n Tickets Diponibles: " + capacidadRestante() + "\n Precio: " + precio + "\n";
     }
 
     public Double porcentajeVendido() {

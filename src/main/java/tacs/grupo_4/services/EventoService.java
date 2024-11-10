@@ -105,8 +105,11 @@ public class EventoService {
                 .set("reservadoEn", LocalDateTime.now());
 
         Asiento asiento = asientoTemplate.findAndModify(query, update, Asiento.class);
-        if (asiento != null) this.sumarReserva(evento, sectorNombre);
-        else throw new AsientoNotFoundException();
+        if (asiento != null) {
+            this.sumarReserva(evento, sectorNombre);
+        } else {
+            throw new AsientoNotFoundException();
+        }
 
         return asiento;
     }
