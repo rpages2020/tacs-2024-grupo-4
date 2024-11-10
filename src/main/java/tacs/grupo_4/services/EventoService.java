@@ -1,6 +1,10 @@
 package tacs.grupo_4.services;
 
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.transaction.annotation.Transactional;
 import tacs.grupo_4.entities.Asiento;
 import tacs.grupo_4.entities.Evento;
@@ -23,10 +27,12 @@ public class EventoService {
 
     private final EventoRepository eventoRepository;
     private final AsientoRepository asientoRepository;
+    private final MongoTemplate asientoTemplate;
 
-    public EventoService(EventoRepository eventoRepository, AsientoRepository asientoRepository) {
+    public EventoService(EventoRepository eventoRepository, AsientoRepository asientoRepository, MongoTemplate asientoTemplate) {
         this.eventoRepository = eventoRepository;
         this.asientoRepository = asientoRepository;
+        this.asientoTemplate = asientoTemplate; // abstracción de menor nivel que el repository
     }
 
     public Evento crearEvento(Evento evento) {
@@ -79,6 +85,7 @@ public class EventoService {
 
     @Transactional
     public Asiento reservarAsientoRandom(UUID evento, String sectorNombre, UUID usuario) {
+        /* Opción que con repository
         Asiento asiento = asientoRepository.findFirstByEstaReservadoAndEventoIdAndSectorNombre(false, evento, sectorNombre)
                 .orElseThrow(AsientoNotFoundException::new);
         asiento.setEstaReservado(true);
@@ -86,6 +93,22 @@ public class EventoService {
         asiento.setReservadoEn(LocalDateTime.now());
         this.sumarReserva(evento, sectorNombre);
         return asientoRepository.save(asiento);
+         */
+        Query query = new Query(
+                Criteria.where("eventoId").is(evento)
+                        .and("estaReservado").is(false)
+                        .and("sector.nombre").is(sectorNombre)
+        );
+        Update update = new Update()
+                .set("estaReservado", true)
+                .set("usuario", usuario)
+                .set("reservadoEn", LocalDateTime.now());
+
+        Asiento asiento = asientoTemplate.findAndModify(query, update, Asiento.class);
+        if (asiento != null) this.sumarReserva(evento, sectorNombre);
+        else throw new AsientoNotFoundException();
+
+        return asiento;
     }
 
     public void sumarReserva(UUID eventoId, String nombreSector) {
