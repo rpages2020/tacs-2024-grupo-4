@@ -60,6 +60,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "help"             ->      helpMensaje;
                 case "hola"             ->      "chau";
                 case "miseventos"       ->      eventoHandler.misEventos(parametros, chatId, telegramUserId);
+                case "mistickets"       ->      usuarioHandler.misReservas(parametros, chatId, telegramUserId);
                 case "reservar"         ->      eventoHandler.reservarAsientoEnSector(parametros, chatId, telegramUserId);
                 case "whoami"           ->      usuarioHandler.whoami(parametros, chatId, telegramUserId);
                 case "misreservas"      ->      usuarioHandler.misReservas(parametros, chatId, telegramUserId);
@@ -74,6 +75,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final String helpMensaje =
             """
                     Comandos disponibles:
+                    • cancelarEvento <eventoId>
                     • confirmarEvento <eventoId>
                     • crearEvento <nombre>,<aaaa-mm-ddThora:minuto:segundo>,<descripcionEvento>,<nombreUbicacion>,<direccion>,<nombreSector1>,<capacidad1>,<precio1>,<nombreSector2>,<capacidad2>,<precio2>,...
                     • crearUsuario <nombre>,<email>,<dni>
@@ -81,6 +83,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     • eventos
                     • hola
                     • misEventos
+                    • misTickets
                     • reservar <eventoId>,<nombreSector>
                     • whoami
             """;
@@ -95,15 +98,13 @@ public class TelegramBot extends TelegramLongPollingBot {
         enviarMensaje(chatId, mensaje);
         mensaje = "crearUsuario Juan Pablo,juan@juan.com,12345678";
         enviarMensaje(chatId, mensaje);
+        mensaje = "eventos";
+        enviarMensaje(chatId, mensaje);
         mensaje = "hola";
         enviarMensaje(chatId, mensaje);
         mensaje = "misEventos";
         enviarMensaje(chatId, mensaje);
-        mensaje = "misEventos";
-        enviarMensaje(chatId, mensaje);
-        mensaje = "cancelarEvento";
-        enviarMensaje(chatId, mensaje);
-        mensaje = "eliminarEvento";
+        mensaje = "misTickets";
         enviarMensaje(chatId, mensaje);
         mensaje = "whoami";
         enviarMensaje(chatId, mensaje);
