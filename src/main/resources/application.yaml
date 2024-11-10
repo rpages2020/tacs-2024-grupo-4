@@ -21,6 +21,10 @@ spring:
       password: P4ssw0rd!
       auto-index-creation: true
 
+telegram:
+  bot:
+    token: ACA-VA-EL-TOKEN
+
 logging:
   level:
     #root: DEBUG
@@ -32,6 +36,12 @@ logging:
               MongoTemplate: DEBUG
               index:
                 MongoPersistentEntityIndexCreator: DEBUG
+springdoc:
+  swagger-ui:
+    path: /api-docs
+    enabled: true
+  api-docs:
+    enabled: true
 
 # BOT
 ---

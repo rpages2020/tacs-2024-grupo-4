@@ -13,6 +13,12 @@ Revisar Module Settings
 ### Docker Compose
     docker-compose up -d
     
+### Docker Compose changes
+    docker-compose up -d --build
+
+### Docker Compose clear all
+    docker-compose down -v
+        
 ### Telegram bot
 Es necesario tener un token de un bot de telegram (registrar bot con el FatherBot).
 
@@ -33,3 +39,7 @@ El flujo de la aplicación, de momento, es el siguiente:
 Por ahora el bot no permite crear eventos con múltiples sectores ni reservar asientos específicos (ej por número de asiento).
 
 Por ahora la API confía totalmente en las solicitudes del bot. Si la hacemos pública habría que agregar autenticación.
+
+## NOTA CLOUD
+se inhabilita checkstyle y test (./gradlew build -x test), para reducir tiempo y procesamiento
+se cambia de instancia de t2.micro a t2.medium

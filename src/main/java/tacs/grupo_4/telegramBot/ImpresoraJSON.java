@@ -19,7 +19,6 @@ public class ImpresoraJSON {
                         usuario.getEmail(),
                         usuario.getDni());
     }
-
     public static String imprimir(Evento evento) {
         StringBuilder mensaje = new StringBuilder();
                 mensaje.append("""
