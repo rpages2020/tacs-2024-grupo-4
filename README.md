@@ -35,8 +35,13 @@ El flujo de la aplicación, de momento, es el siguiente:
 2) Se crea un evento (crearEvento)
 3) Se confirma el evento (confirmarEvento). En este punto se crean las entidades Asiento
 4) Se reservan asientos hasta que no haya disponibles (reservar)
+5.1) El usuario que creo el evento puede cerrar la venta de entradas, recibiendo la estadistica de
+las cantidades de tickets vendidos, la recaudación por sector y el porcentaje de ocupacion del evento. (cerrarVenta)
+5.2) El ususario que creo un evento lo puede cancelar y con esto ya no es posible la reserva de tickets. (cancelarEvento)
+6) El ususario que crea eventos puede ver la liosta de estos con el detalle del estado de las ventas. (misEventos)
+7) Para los ususario que han comprado tickets, puede revisarlos con el coman do misTickets o misReservas.
 
-Por ahora el bot no permite crear eventos con múltiples sectores ni reservar asientos específicos (ej por número de asiento).
+la API soporta la creacion de eventos con diferentes sectores de ubicaciones.
 
 Por ahora la API confía totalmente en las solicitudes del bot. Si la hacemos pública habría que agregar autenticación.
 
