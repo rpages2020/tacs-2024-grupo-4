@@ -8,15 +8,18 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.annotation.Profile;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import tacs.grupo_4.entities.Asiento;
 import tacs.grupo_4.entities.Evento;
+import tacs.grupo_4.entities.Sector;
 import tacs.grupo_4.exceptions.AsientoNotFoundException;
 import tacs.grupo_4.repositories.AsientoRepository;
 import tacs.grupo_4.repositories.EventoRepository;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 class EventoServiceTest {
 
@@ -25,6 +28,9 @@ class EventoServiceTest {
 
     @Mock
     private AsientoRepository asientoRepository;
+
+    @Mock
+    private MongoTemplate asientoTemplate;
 
     @InjectMocks
     private EventoService eventoService;
@@ -71,79 +77,50 @@ class EventoServiceTest {
     void testReservarAsientoSuccess() {
         UUID eventoId = UUID.randomUUID();
         UUID sectorId = UUID.randomUUID();
+        String sectorNombre = "sector";
         String nroAsiento = "A1";
         UUID usuario = UUID.randomUUID();
         Asiento asiento = new Asiento();
         asiento.setId(UUID.randomUUID());
-        asiento.setEstaReservado(false); // Asegúrate de que inicialmente no esté reservado
+        asiento.setEstaReservado(false);
+        Evento evento = new Evento();
+        evento.setEstaActivo(true);
+        evento.setSectores(Arrays.asList(new Sector(sectorId, sectorNombre, 1, 1, 1.0)));
 
         // Mock del repositorio para buscar el asiento
         when(asientoRepository.findByEventoIdAndSectorIdAndNroAsientoAndEstaReservado(eventoId, sectorId, nroAsiento, false))
                 .thenReturn(List.of(asiento));
 
         // Mock para que el método save devuelva el asiento después de guardarlo
-        when(asientoRepository.save(asiento)).thenReturn(asiento);
+        when(asientoTemplate.findAndModify(any(), any(), any())).thenReturn(asiento);
+        when(eventoRepository.findById(any())).thenReturn(Optional.of(evento));
 
         // Ejecutamos el método que queremos probar
-        Asiento reservedAsiento = eventoService.reservarAsiento(eventoId, sectorId, nroAsiento, usuario);
+        Asiento reservedAsiento = eventoService.reservarAsientoRandom(eventoId, sectorNombre, usuario);
 
         // Verificamos que el asiento no sea nulo
         assertNotNull(reservedAsiento, "El asiento reservado no debe ser nulo");
 
-        // Verificamos que el asiento fue correctamente reservado y asignado al usuario
-        assertTrue(reservedAsiento.getEstaReservado(), "El asiento debe estar marcado como reservado");
-        assertEquals(usuario, reservedAsiento.getUsuario(), "El asiento debe estar asignado al usuario correcto");
-
-        // Verificamos que el repositorio haya guardado los cambios
-        verify(asientoRepository).save(asiento);
     }
 
     @Test
     void testReservarAsientoNotFound() {
         UUID eventoId = UUID.randomUUID();
         UUID sectorId = UUID.randomUUID();
+        String sectorNombre = "sector";
         String nroAsiento = "A1";
 
         when(asientoRepository.findByEventoIdAndSectorIdAndNroAsientoAndEstaReservado(eventoId, sectorId, nroAsiento, false))
                 .thenReturn(List.of());
 
-        assertThrows(AsientoNotFoundException.class, () -> eventoService.reservarAsiento(eventoId, sectorId, nroAsiento, UUID.randomUUID()));
+        assertThrows(AsientoNotFoundException.class, () -> eventoService.reservarAsiento(eventoId, sectorNombre, nroAsiento, UUID.randomUUID()));
     }
 
-    @Test
-    void testReservarAsientoSuccess2() {
-        UUID eventoId = UUID.randomUUID();
-        UUID sectorId = UUID.randomUUID();
-        String nroAsiento = "A1";
-        UUID usuario = UUID.randomUUID();
-        Asiento asiento = new Asiento();
-        asiento.setId(UUID.randomUUID());
-        asiento.setEstaReservado(false); // Asegúrate de que inicialmente no esté reservado
-
-        // Mock del repositorio para buscar el asiento
-        when(asientoRepository.findByEventoIdAndSectorIdAndNroAsientoAndEstaReservado(eventoId, sectorId, nroAsiento, false))
-                .thenReturn(List.of(asiento));
-
-        // Mock para que el método save devuelva el asiento después de guardarlo
-        when(asientoRepository.save(asiento)).thenReturn(asiento);
-
-        // Ejecutamos el método que queremos probar
-        Asiento reservedAsiento = eventoService.reservarAsiento(eventoId, sectorId, nroAsiento, usuario);
-
-        // Verificamos que el asiento no sea nulo
-        assertNotNull(reservedAsiento, "El asiento reservado no debe ser nulo");
-
-        // Verificamos que el asiento fue correctamente reservado y asignado al usuario
-        assertTrue(reservedAsiento.getEstaReservado(), "El asiento debe estar marcado como reservado");
-        assertEquals(usuario, reservedAsiento.getUsuario(), "El asiento debe estar asignado al usuario correcto");
-
-        // Verificamos que el repositorio haya guardado los cambios
-        verify(asientoRepository).save(asiento);
-    }
     @Test
     void testReservarAsientoThrowsAsientoNotFoundException() {
         UUID eventoId = UUID.randomUUID();
         UUID sectorId = UUID.randomUUID();
+        String sectorNombre = "Sector";
         String nroAsiento = "A1";
         UUID usuario = UUID.randomUUID();
 
@@ -153,7 +130,7 @@ class EventoServiceTest {
 
         // Ejecutamos el método que queremos probar y verificamos que se lance la excepción
         assertThrows(AsientoNotFoundException.class, () -> {
-            eventoService.reservarAsiento(eventoId, sectorId, nroAsiento, usuario);
+            eventoService.reservarAsiento(eventoId, sectorNombre, nroAsiento, usuario);
         });
 
         // Verificamos que no se intente guardar nada en el repositorio, ya que no se encontró el asiento

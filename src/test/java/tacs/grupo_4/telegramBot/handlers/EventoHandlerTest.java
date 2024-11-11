@@ -11,10 +11,13 @@ import tacs.grupo_4.entities.Sector;
 import tacs.grupo_4.entities.Ubicacion;
 import tacs.grupo_4.entities.Usuario;
 import tacs.grupo_4.exceptions.UsuarioNotFoundException;
+import tacs.grupo_4.telegramBot.ImpresoraJSON;
 import tacs.grupo_4.telegramBot.TelegramBot;
 import tacs.grupo_4.telegramBot.handlers.UsuarioHandler;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 import java.util.List;
 
@@ -26,29 +29,38 @@ public class EventoHandlerTest {
     private WebClient webClient;
     private TelegramBot telegramBot;
     private UsuarioHandler usuarioHandler;
+    private ImpresoraJSON impresoraJSON;
 
     @BeforeEach
     void setUp() {
+
+        WebClient.Builder webClientBuilder = Mockito.mock(WebClient.Builder.class);
         webClient = Mockito.mock(WebClient.class, RETURNS_DEEP_STUBS);
+        when(webClientBuilder.build()).thenReturn(webClient);
         telegramBot = Mockito.mock(TelegramBot.class);
         usuarioHandler = Mockito.mock(UsuarioHandler.class);
-        eventoHandler = new EventoHandler(WebClient.builder(), telegramBot, usuarioHandler);
+
+        eventoHandler = new EventoHandler(webClientBuilder, telegramBot, usuarioHandler);
     }
 
     @Test
     void crearEvento_Success() {
-        String[] mensaje = {"eventoTest", "2024-10-10T10:00:00", "eventoDesc", "ubicacionTest", "direccionTest", "100", "50"};
+        String[] mensaje = {"EventoTest","2025-09-20T00:00:00","Festival Azul","La Rural","Avenida Siempreviva","Campo","2","150","Platea Alta","10","200"};
         String chatId = "123";
         Long telegramUserId = 1L;
+        Usuario usuario = new Usuario();
+        usuario.setId(UUID.randomUUID());
+        Mono<Usuario> mockUsuario = Mono.just(usuario);
 
-        Usuario mockUsuario = new Usuario();
-        mockUsuario.setId(UUID.randomUUID());
+        when(webClient.post()
+                .uri(anyString())
+                .bodyValue(any())
+                .retrieve()
+                .onStatus(any(), any())
+                .bodyToMono(Evento.class))
+                .thenReturn(Mono.just(new Evento()));
 
-        when(usuarioHandler.findByTelegramId(telegramUserId)).thenReturn(Mono.just(mockUsuario));
-
-        WebClient.ResponseSpec responseSpec = mock(WebClient.ResponseSpec.class);
-        when(webClient.post().uri(anyString()).bodyValue(any(Evento.class)).retrieve()).thenReturn(responseSpec);
-        when(responseSpec.bodyToMono(Evento.class)).thenReturn(Mono.just(new Evento()));
+        when(usuarioHandler.findByTelegramId(anyLong())).thenReturn(mockUsuario);
 
         String result = eventoHandler.crearEvento(mensaje, chatId, telegramUserId);
         verify(telegramBot).enviarMensaje(eq(chatId), contains("Evento creado exitosamente"));
@@ -58,11 +70,11 @@ public class EventoHandlerTest {
 
     @Test
     void crearEvento_Failure_UserNotFound() {
-        String[] mensaje = {"eventoTest", "2024-10-10T10:00:00", "eventoDesc", "ubicacionTest", "direccionTest", "100", "50"};
+        String[] mensaje = {"EventoTest","2025-09-20T00:00:00","Festival Azul","La Rural","Avenida Siempreviva","Campo","2","150","Platea Alta","10","200"};
         String chatId = "123";
         Long telegramUserId = 1L;
 
-        when(usuarioHandler.findByTelegramId(telegramUserId)).thenThrow(new UsuarioNotFoundException());
+        when(usuarioHandler.findByTelegramId(telegramUserId)).thenReturn(Mono.error(new UsuarioNotFoundException()));
 
         String result = eventoHandler.crearEvento(mensaje, chatId, telegramUserId);
         verify(telegramBot).enviarMensaje(eq(chatId), eq("Acceso denegado"));
@@ -80,10 +92,13 @@ public class EventoHandlerTest {
         mockUsuario.setId(UUID.randomUUID());
 
         when(usuarioHandler.findByTelegramId(telegramUserId)).thenReturn(Mono.just(mockUsuario));
-
-        WebClient.ResponseSpec responseSpec = mock(WebClient.ResponseSpec.class);
-        when(webClient.get().uri(anyString()).retrieve()).thenReturn(responseSpec);
-        when(responseSpec.bodyToMono(any(ParameterizedTypeReference.class))).thenReturn(Mono.just(List.of(new Evento())));
+        List<Evento> mockEventos = Arrays.asList(new Evento(), new Evento());
+        when(webClient.get()
+                .uri(anyString())
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<Evento>> () {
+                }))
+                .thenReturn(Mono.just(mockEventos));
 
         String result = eventoHandler.misEventos(mensaje, chatId, telegramUserId);
         verify(telegramBot).enviarMensaje(eq(chatId), contains("Tus eventos son"));
@@ -97,7 +112,7 @@ public class EventoHandlerTest {
         String chatId = "123";
         Long telegramUserId = 1L;
 
-        when(usuarioHandler.findByTelegramId(telegramUserId)).thenThrow(new UsuarioNotFoundException());
+        when(usuarioHandler.findByTelegramId(telegramUserId)).thenReturn(Mono.error(new UsuarioNotFoundException()));
 
         String result = eventoHandler.misEventos(mensaje, chatId, telegramUserId);
         verify(telegramBot).enviarMensaje(eq(chatId), eq("Acceso denegado"));
@@ -113,6 +128,9 @@ public class EventoHandlerTest {
         WebClient.ResponseSpec responseSpec = mock(WebClient.ResponseSpec.class);
         when(webClient.get().uri(anyString()).retrieve()).thenReturn(responseSpec);
         when(responseSpec.bodyToMono(any(ParameterizedTypeReference.class))).thenReturn(Mono.just(List.of(new Evento())));
+
+        TelegramBot botMock = mock(TelegramBot.class);
+        when(botMock.getEnvBaseUrl()).thenReturn("http://localhost");
 
         String result = eventoHandler.eventos(mensaje, chatId);
         verify(telegramBot).enviarMensaje(eq(chatId), contains("Los eventos son"));

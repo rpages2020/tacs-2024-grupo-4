@@ -255,7 +255,7 @@ public class EventoHandler {
     }
 
 
-    private Usuario verificarUsusario(String chatId, Long telegramUserId) {
+    public Usuario verificarUsusario(String chatId, Long telegramUserId) {
         System.out.println("VERIFICANDO USUARIO");
         Mono<Usuario> usuarioAsync = usuarioHandler.findByTelegramId(telegramUserId);
         Usuario usuario;

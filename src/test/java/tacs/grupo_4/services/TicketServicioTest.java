@@ -104,7 +104,7 @@ class TicketServicioTest {
         asiento.setSector(new Sector());
         asiento.getSector().setPrecio(100.0);
 
-        Ticket ticket = new Ticket(UUID.randomUUID(), 100.0, asiento, LocalDateTime.now(), true);
+        Ticket ticket = new Ticket(UUID.randomUUID(), 100.0, asiento, LocalDateTime.now(), true, "Ejemplo", "sector ejemplo");
 
         when(ticketRepository.insert(any(Ticket.class))).thenReturn(ticket);
 

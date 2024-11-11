@@ -13,15 +13,13 @@ public class SectorTest {
         Sector sector = Sector.builder()
                 .id(id)
                 .nombre("Platea Alta")
-                .capacidad(100L)
+                .capacidadTotal(100)
                 .precio(200.0)
-                .descripcion("Primera fila")
                 .build();
 
         assertEquals(id, sector.getId());
         assertEquals("Platea Alta", sector.getNombre());
-        assertEquals(100L, sector.getCapacidad());
+        assertEquals(100, sector.getCapacidadTotal());
         assertEquals(200.0, sector.getPrecio());
-        assertEquals("Primera fila", sector.getDescripcion());
     }
 }

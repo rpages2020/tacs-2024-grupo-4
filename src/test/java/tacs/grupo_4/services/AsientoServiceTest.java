@@ -60,7 +60,7 @@ class AsientoServiceTest {
         Evento evento = new Evento();
         evento.setId(UUID.randomUUID());
         Sector sector = new Sector();
-        sector.setCapacidad(5L);
+        sector.setCapacidadTotal(5);
         List<Sector> sectores = List.of(sector);
         evento.setSectores(sectores);
 

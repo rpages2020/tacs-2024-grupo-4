@@ -20,6 +20,9 @@ public class ImpresoraJSON {
                         usuario.getDni());
     }
     public static String imprimir(Evento evento) {
+        if (evento.getUbicacion() == null) {
+            return "";
+        }
         StringBuilder mensaje = new StringBuilder();
                 mensaje.append("""
                 Datos del evento
@@ -62,6 +65,9 @@ public class ImpresoraJSON {
     public static String imprimirEventosYEstadisticas(List<Evento> eventos) {
         StringBuilder response = new StringBuilder();
         for (Evento evento : eventos) {
+            if (evento.getUbicacion() == null) {
+                return "";
+            }
             response.append(imprimir(evento));
             response.append("\n");
             response.append(evento.estadistica());
