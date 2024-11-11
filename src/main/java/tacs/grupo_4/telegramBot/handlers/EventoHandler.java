@@ -218,10 +218,12 @@ public class EventoHandler {
                         return Mono.just(new RuntimeException("Evento no encontrado."));
                     })
                     .bodyToMono(String.class);
-            responseMono.subscribe(
-                    response -> telegramBot.enviarMensaje(chatId, "Evento cancelado exitosamente."),
-                    error -> telegramBot.enviarMensaje(chatId, "Hubo un error: " + error.getMessage())
-            );
+            try {   // Ejecución síncrona
+                responseMono.block();
+                telegramBot.enviarMensaje(chatId, "Evento cancelado exitosamente.");
+            } catch (Exception error) {
+                telegramBot.enviarMensaje(chatId, "Hubo un error: " + error.getMessage());
+            }
         }
         return "";
     }
@@ -268,8 +270,10 @@ public class EventoHandler {
     }
 
     public String cerrarEvento(String[] parametros, String chatId, Long telegramUserId) {
-         cancelarEvento(parametros, chatId, telegramUserId);
+        cancelarEvento(parametros, chatId, telegramUserId);
+
         String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos/" + parametros[0];
+
         Mono<Evento> responseMono = webClient.get()
                 .uri(url)
                 .retrieve()
@@ -278,10 +282,12 @@ public class EventoHandler {
                 })
                 .onStatus(status -> status.value() == 403, clientResponse -> {
                     return Mono.just(new RuntimeException("No tienes permisos para cancelar este evento."));
-                }).onStatus(status -> status.value() == 500, clientResponse -> {
+                })
+                .onStatus(status -> status.value() == 500, clientResponse -> {
                     return Mono.just(new RuntimeException("Evento no encontrado."));
                 })
                 .bodyToMono(Evento.class);
+
         responseMono.subscribe(
                 response -> telegramBot.enviarMensaje(chatId, "Evento cerrado: " + ImpresoraJSON.imprimirEventoYEstadistica(response)),
                 error -> telegramBot.enviarMensaje(chatId, "Hubo un error: " + error.getMessage())

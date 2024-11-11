@@ -126,6 +126,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
     public String getEnvBaseUrl() {
         return "http://grupo4api";
+        //Para correr fuera de docker
+        //return "http://localhost";
     }
 
 }
