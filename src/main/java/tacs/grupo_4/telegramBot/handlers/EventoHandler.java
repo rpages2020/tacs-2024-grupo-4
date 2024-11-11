@@ -206,7 +206,7 @@ public class EventoHandler {
         if (usuario != null) {
             String eventoId = parametros[0];
             String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos/" + eventoId + "/usuario/" + usuario.getId();
-            Mono<Void> responseMono = webClient.put()
+            Mono<String> responseMono = webClient.put()
                     .uri(url)
                     .retrieve()
                     .onStatus(status -> status.value() == 404, clientResponse -> {
@@ -217,9 +217,9 @@ public class EventoHandler {
                     }).onStatus(status -> status.value() == 500, clientResponse -> {
                         return Mono.just(new RuntimeException("Evento no encontrado."));
                     })
-                    .bodyToMono(Void.class);
+                    .bodyToMono(String.class);
             responseMono.subscribe(
-                    unused -> telegramBot.enviarMensaje(chatId, "Evento cancelado exitosamente."),
+                    response -> telegramBot.enviarMensaje(chatId, "Evento cancelado exitosamente."),
                     error -> telegramBot.enviarMensaje(chatId, "Hubo un error: " + error.getMessage())
             );
         }
@@ -228,7 +228,7 @@ public class EventoHandler {
 
     public String eliminarEvento(String[] parametros, String chatId, Long telegramUserId) {
         if (parametros.length != 1) {
-            return "cancelarEvento <eventoId>";
+            return "eliminarEvento <eventoId>";
         }
         Usuario usuario = verificarUsusario(chatId, telegramUserId);
         if (usuario != null) {
@@ -247,7 +247,7 @@ public class EventoHandler {
                     })
                     .bodyToMono(Void.class);
             responseMono.subscribe(
-                    unused -> telegramBot.enviarMensaje(chatId, "Evento cancelado exitosamente."),
+                    response -> telegramBot.enviarMensaje(chatId, "Evento eliminado exitosamente."),
                     error -> telegramBot.enviarMensaje(chatId, "Hubo un error: " + error.getMessage())
             );
         }
@@ -256,10 +256,8 @@ public class EventoHandler {
 
 
     public Usuario verificarUsusario(String chatId, Long telegramUserId) {
-        System.out.println("VERIFICANDO USUARIO");
         Mono<Usuario> usuarioAsync = usuarioHandler.findByTelegramId(telegramUserId);
         Usuario usuario;
-        System.out.println("VERIFICANDO USUARIO");
         try {
             usuario = usuarioAsync.block(); //Espero de forma sincronica
         } catch (UsuarioNotFoundException e) {
@@ -267,6 +265,28 @@ public class EventoHandler {
             return null;
         }
         return usuario;
+    }
+
+    public String cerrarEvento(String[] parametros, String chatId, Long telegramUserId) {
+         cancelarEvento(parametros, chatId, telegramUserId);
+        String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos/" + parametros[0];
+        Mono<Evento> responseMono = webClient.get()
+                .uri(url)
+                .retrieve()
+                .onStatus(status -> status.value() == 404, clientResponse -> {
+                    return Mono.just(new RuntimeException("Evento no encontrado."));
+                })
+                .onStatus(status -> status.value() == 403, clientResponse -> {
+                    return Mono.just(new RuntimeException("No tienes permisos para cancelar este evento."));
+                }).onStatus(status -> status.value() == 500, clientResponse -> {
+                    return Mono.just(new RuntimeException("Evento no encontrado."));
+                })
+                .bodyToMono(Evento.class);
+        responseMono.subscribe(
+                response -> telegramBot.enviarMensaje(chatId, "Evento cerrado: " + ImpresoraJSON.imprimirEventoYEstadistica(response)),
+                error -> telegramBot.enviarMensaje(chatId, "Hubo un error: " + error.getMessage())
+        );
+        return "";
     }
 
 }

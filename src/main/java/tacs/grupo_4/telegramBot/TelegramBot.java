@@ -65,6 +65,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "whoami"           ->      usuarioHandler.whoami(parametros, chatId, telegramUserId);
                 case "misreservas"      ->      usuarioHandler.misReservas(parametros, chatId, telegramUserId);
                 case "eliminarevento"   ->      eventoHandler.eliminarEvento(parametros, chatId, telegramUserId);
+                case "cerrarventa"     ->      eventoHandler.cerrarEvento(parametros, chatId, telegramUserId);
                 default                 ->      bienvenida(nombre);
             };
             if (!respuesta.isEmpty()) {
@@ -75,9 +76,10 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final String helpMensaje =
             """
                     Comandos disponibles:
+                    • crearEvento <nombre>,<aaaa-mm-ddThora:minuto:segundo>,<descripcionEvento>,<nombreUbicacion>,<direccion>,<nombreSector1>,<capacidad1>,<precio1>,<nombreSector2>,<capacidad2>,<precio2>,...
+                    • cerrarVenta <eventoId>
                     • cancelarEvento <eventoId>
                     • confirmarEvento <eventoId>
-                    • crearEvento <nombre>,<aaaa-mm-ddThora:minuto:segundo>,<descripcionEvento>,<nombreUbicacion>,<direccion>,<nombreSector1>,<capacidad1>,<precio1>,<nombreSector2>,<capacidad2>,<precio2>,...
                     • crearUsuario <nombre>,<email>,<dni>
                     • ejemplos
                     • eventos

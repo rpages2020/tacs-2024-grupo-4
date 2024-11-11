@@ -46,9 +46,7 @@ public class UsuarioController {
     })
     @GetMapping("")
     public ResponseEntity<List<Usuario>> obtenerTodosLosUsuarios() {
-        System.out.print("ENTRO EN OBTENER TODOS LSO USUARIOS");
         List<Usuario> usuarios = usuarioService.obtenerTodosLosUsuarios();
-        System.out.print(usuarios);
         return new ResponseEntity<>(usuarios, HttpStatus.OK);
     }
     @Operation(summary = "Obtener usuario por Telegram ID", description = "Recupera un usuario de la base de datos utilizando su ID de Telegram.")

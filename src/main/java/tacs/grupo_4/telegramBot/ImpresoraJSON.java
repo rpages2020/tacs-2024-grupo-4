@@ -68,11 +68,17 @@ public class ImpresoraJSON {
             if (evento.getUbicacion() == null) {
                 return "";
             }
-            response.append(imprimir(evento));
-            response.append("\n");
-            response.append(evento.estadistica());
-            response.append("\n\n");
+           imprimirEventoYEstadistica(evento);
         }
+        return response.toString();
+    }
+
+    public static String imprimirEventoYEstadistica(Evento evento) {
+        StringBuilder response = new StringBuilder();
+        response.append(imprimir(evento));
+        response.append("\n");
+        response.append(evento.estadistica());
+        response.append("\n\n");
         return response.toString();
     }
 

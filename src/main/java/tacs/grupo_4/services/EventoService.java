@@ -47,7 +47,7 @@ public class EventoService {
         return eventoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Evento no encontrado"));
     }
-
+    @Transactional
     public List<Evento> obtenerEventosPorUserId(UUID id) {
         return eventoRepository.findByUsuario(id)
                 .orElseThrow(() -> new RuntimeException("Usuario sin eventos"));
@@ -120,6 +120,7 @@ public class EventoService {
         eventoRepository.save(evento);
     }
 
+    @Transactional
     public Evento confirmarEvento(UUID eventoId, UUID usuarioId) {
         Evento evento = eventoRepository.findById(eventoId)
                 .orElseThrow(EventoNotFoundException::new);
@@ -150,6 +151,7 @@ public class EventoService {
         return evento;
     }
 
+    @Transactional
     public void cancelarEvento(UUID id, UUID usuarioId) {
         Evento eventoExistente = obtenerEventoPorId(id);
         if (eventoExistente.getUsuario().equals(usuarioId)) {
@@ -158,6 +160,7 @@ public class EventoService {
         eventoRepository.save(eventoExistente);
     }
 
+    @Transactional
     public void eliminarEvento(UUID id, UUID usuarioId) {
         Evento eventoExistente = obtenerEventoPorId(id);
         if (eventoExistente.getUsuario().equals(usuarioId)) { // baja física

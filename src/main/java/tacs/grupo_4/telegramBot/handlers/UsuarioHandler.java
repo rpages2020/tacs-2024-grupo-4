@@ -111,10 +111,8 @@ public class UsuarioHandler {
 
     }
     private Usuario verificarUsusario(String chatId, Long telegramUserId) {
-        System.out.println("VERIFICANDO USUARIO");
         Mono<Usuario> usuarioAsync = this.findByTelegramId(telegramUserId);
         Usuario usuario;
-        System.out.println("VERIFICANDO USUARIO");
         try {
             usuario = usuarioAsync.block(); //Espero de forma sincronica
         } catch (UsuarioNotFoundException e) {

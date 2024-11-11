@@ -55,7 +55,6 @@ public class Evento {
             recaudacion += recaudacionSector;
             estadistica.append("Recaudación: ").append(recaudacionSector);
             Integer capacidadRestanteSector = sector.capacidadRestante();
-            System.out.println("\n\n!!!!!!!!!!!!!!!!!!!!!!!CApcaidad restantte sector ");
             capacidadRestante = capacidadRestante + capacidadRestanteSector;
             estadistica.append("\nCapacidad Restante: ").append(capacidadRestanteSector);
             Double porcentajeVendidoSector = sector.porcentajeVendido();

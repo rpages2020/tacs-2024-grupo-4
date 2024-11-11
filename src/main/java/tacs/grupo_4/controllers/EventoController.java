@@ -173,17 +173,15 @@ public class EventoController {
     }
 
     @PutMapping("/{id}/usuario/{usuarioId}")
-    public ResponseEntity<Void> cancelarEvento(@PathVariable String id, @PathVariable String usuarioId) {
-        System.out.println("LLEGA AL CONTROLLER EVENTO_ID: " + id + " Usuario: " + usuarioId);
+    public ResponseEntity<String> cancelarEvento(@PathVariable String id, @PathVariable String usuarioId) {
         eventoService.cancelarEvento(UUID.fromString(id), UUID.fromString(usuarioId));
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}/usuario/{usuarioId}")
-    public ResponseEntity<Void> eliminarEvento(@PathVariable String id, @PathVariable String usuarioId) {
-        System.out.println("LLEGA AL CONTROLLER EVENTO_ID: " + id + " Usuario: " + usuarioId);
+    public ResponseEntity<String> eliminarEvento(@PathVariable String id, @PathVariable String usuarioId) {
         eventoService.eliminarEvento(UUID.fromString(id), UUID.fromString(usuarioId));
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
