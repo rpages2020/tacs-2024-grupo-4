@@ -146,7 +146,10 @@ class UsuarioServiceTest {
         verify(usuarioRepository).findAll();
     }
 
-
+    @Test
+    void cantidadusuariosalta() {
+        System.out.println(usuarioRepository.countByFechaAltaBetween("11-11-24","16-11-24"));
+    }
 
 
 }

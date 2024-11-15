@@ -59,7 +59,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "crearevento"      ->      eventoHandler.crearEvento(parametros, chatId, telegramUserId);
                 case "crearusuario"     ->      usuarioHandler.crearUsuario(parametros, chatId, telegramUserId);
                 case "ejemplos"         ->      ejemplos(chatId);
-                case "eliminarevento"   ->      eventoHandler.eliminarEvento(parametros, chatId, telegramUserId);
                 case "eventos"          ->      eventoHandler.eventos(parametros, chatId);
                 case "help"             ->      helpMensaje;
                 case "hola"             ->      "chau";
@@ -71,7 +70,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "altasusuariosporfecha" -> adminHandler.usuariosPorFecha(parametros, chatId, telegramUserId);
                 case "ticketsporfecha"  ->      adminHandler.ticketsPorFecha(parametros, chatId, telegramUserId);
                 case "cancelarevento"   ->      eventoHandler.cancelarEvento(parametros, chatId, telegramUserId);
-                case "cerrarventa"      ->      eventoHandler.cerrarEvento(parametros, chatId, telegramUserId);
+                case "cerrarventa"      ->      eventoHandler.cancelarEvento(parametros, chatId, telegramUserId);
+                case "eliminarevento"   ->      eventoHandler.eliminarEvento(parametros, chatId, telegramUserId);
+                case "cambiaridusuario" ->      eventoHandler.cambiarIdUsuario(parametros, chatId, telegramUserId);
                 default                 ->      bienvenida(nombre);
             };
             if (!respuesta.isEmpty()) {

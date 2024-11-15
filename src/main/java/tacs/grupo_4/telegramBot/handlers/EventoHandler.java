@@ -184,7 +184,14 @@ public class EventoHandler {
             String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos/" + mensaje[0] + "/confirmar/" + usuario.getId();
             Mono<Evento> responseMono = webClient.put()
                     .uri(url)
-                    .retrieve()
+                    .retrieve().onStatus(status -> status.value() == 404, clientResponse -> {
+                        return Mono.just(new RuntimeException("Evento no encontrado."));
+                    })
+                    .onStatus(status -> status.value() == 403, clientResponse -> {
+                        return Mono.just(new RuntimeException("No tienes permiso para confirmar este evento."));
+                    }).onStatus(status -> status.value() == 500, clientResponse -> {
+                        return Mono.just(new RuntimeException("No tiene permiso para confirmar este evento."));
+                    })
                     .bodyToMono(Evento.class);
 
             responseMono.subscribe(
@@ -213,19 +220,44 @@ public class EventoHandler {
                         return Mono.just(new RuntimeException("Evento no encontrado."));
                     })
                     .onStatus(status -> status.value() == 403, clientResponse -> {
-                        return Mono.just(new RuntimeException("No tienes permisos para cancelar este evento."));
+                        return Mono.just(new RuntimeException("No tiene permiso para cancelar este evento."));
                     }).onStatus(status -> status.value() == 500, clientResponse -> {
-                        return Mono.just(new RuntimeException("Evento no encontrado."));
+                        return Mono.just(new RuntimeException("No tiene permiso para cancelar este evento."));
                     })
                     .bodyToMono(String.class);
             try {   // Ejecución síncrona
                 responseMono.block();
                 telegramBot.enviarMensaje(chatId, "Evento cancelado exitosamente.");
+                mostrsarEStdoFinalEvento(eventoId, chatId);
             } catch (Exception error) {
                 telegramBot.enviarMensaje(chatId, "Hubo un error: " + error.getMessage());
             }
         }
         return "";
+    }
+
+    private void mostrsarEStdoFinalEvento(String eventoId, String chatId) {
+
+        String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos/" + eventoId;
+
+        Mono<Evento> responseMono = webClient.get()
+                .uri(url)
+                .retrieve()
+                .onStatus(status -> status.value() == 404, clientResponse -> {
+                    return Mono.just(new RuntimeException("Evento no encontrado."));
+                })
+                .onStatus(status -> status.value() == 403, clientResponse -> {
+                    return Mono.just(new RuntimeException("No tienes permisos para cancelar este evento."));
+                })
+                .onStatus(status -> status.value() == 500, clientResponse -> {
+                    return Mono.just(new RuntimeException("Evento no encontrado."));
+                })
+                .bodyToMono(Evento.class);
+
+        responseMono.subscribe(
+                response -> telegramBot.enviarMensaje(chatId, "Estado del evento: " + ImpresoraJSON.imprimirEventoYEstadistica(response)),
+                error -> telegramBot.enviarMensaje(chatId, "Hubo un error: " + error.getMessage())
+        );
     }
 
     public String eliminarEvento(String[] parametros, String chatId, Long telegramUserId) {
@@ -269,30 +301,29 @@ public class EventoHandler {
         return usuario;
     }
 
-    public String cerrarEvento(String[] parametros, String chatId, Long telegramUserId) {
-        cancelarEvento(parametros, chatId, telegramUserId);
 
-        String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos/" + parametros[0];
+    public String cambiarIdUsuario(String[] parametros, String chatId, Long telegramUserId) {
 
-        Mono<Evento> responseMono = webClient.get()
-                .uri(url)
-                .retrieve()
-                .onStatus(status -> status.value() == 404, clientResponse -> {
-                    return Mono.just(new RuntimeException("Evento no encontrado."));
-                })
-                .onStatus(status -> status.value() == 403, clientResponse -> {
-                    return Mono.just(new RuntimeException("No tienes permisos para cancelar este evento."));
-                })
-                .onStatus(status -> status.value() == 500, clientResponse -> {
-                    return Mono.just(new RuntimeException("Evento no encontrado."));
-                })
-                .bodyToMono(Evento.class);
-
-        responseMono.subscribe(
-                response -> telegramBot.enviarMensaje(chatId, "Evento cerrado: " + ImpresoraJSON.imprimirEventoYEstadistica(response)),
-                error -> telegramBot.enviarMensaje(chatId, "Hubo un error: " + error.getMessage())
-        );
-        return "";
+            String eventoId = parametros[0];
+            String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos/cambiarIdUsuario/" + eventoId;
+            Mono<Void> responseMono = webClient.put()
+                    .uri(url)
+                    .retrieve()
+                    .onStatus(status -> status.value() == 404, clientResponse -> {
+                        return Mono.just(new RuntimeException("Evento no encontrado -cambiar id usuario."));
+                    })
+                    .onStatus(status -> status.value() == 403, clientResponse -> {
+                        return Mono.just(new RuntimeException("Usted no tiene permisos para realizar esta accion."));
+                    }).onStatus(status -> status.value() == 500, clientResponse -> {
+                        return Mono.just(new RuntimeException("No se puede realizar la accion."));
+                    })
+                    .bodyToMono(Void.class);
+            responseMono.subscribe(
+                    response -> telegramBot.enviarMensaje(chatId, "Evento eliminado exitosamente."),
+                    error -> telegramBot.enviarMensaje(chatId, "Hubo un error: " + error.getMessage())
+            );
+        return "cambiar id ususario en evento";
     }
+
 
 }

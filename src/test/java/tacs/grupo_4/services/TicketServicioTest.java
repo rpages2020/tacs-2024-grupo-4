@@ -114,5 +114,9 @@ class TicketServicioTest {
         verify(ticketRepository).insert(any(Ticket.class));
     }
 
+    @Test
+    void cantidadusuariosalta() {
+        System.out.println(ticketRepository.countByFechaBetween("11-11-24","16-11-24"));
+    }
 
 }

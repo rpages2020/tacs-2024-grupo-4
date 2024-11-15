@@ -153,18 +153,28 @@ public class EventoService {
 
     @Transactional
     public void cancelarEvento(UUID id, UUID usuarioId) {
-        Evento eventoExistente = obtenerEventoPorId(id);
-        if (eventoExistente.getUsuario().equals(usuarioId)) {
-            eventoExistente.setEstaActivo(false);
-        } // baja lógica
-        eventoRepository.save(eventoExistente);
+        Evento evento = eventoRepository.findById(id)
+                .orElseThrow(EventoNotFoundException::new);
+        if (!usuarioId.equals(evento.getUsuario())) {
+            throw new RuntimeException("Acceso denegado.");
+        }
+        evento.setEstaActivo(false);
+        eventoRepository.save(evento);
     }
 
     @Transactional
     public void eliminarEvento(UUID id, UUID usuarioId) {
-        Evento eventoExistente = obtenerEventoPorId(id);
-        if (eventoExistente.getUsuario().equals(usuarioId)) { // baja física
-            eventoRepository.delete(eventoExistente);
+        Evento evento = obtenerEventoPorId(id);
+        if (!usuarioId.equals(evento.getUsuario())) {
+            throw new RuntimeException("Acceso denegado.");
         }
+        eventoRepository.delete(evento);
+    }
+
+    @Transactional
+    public void cambiarIdUsuario(String id) {
+        Evento evento = obtenerEventoPorId(UUID.fromString(id));
+        evento.setUsuario(UUID.randomUUID());
+        eventoRepository.save(evento);
     }
 }

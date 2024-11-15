@@ -15,10 +15,13 @@ import org.springframework.test.context.TestPropertySource;
 import tacs.grupo_4.entities.Asiento;
 import tacs.grupo_4.entities.Evento;
 import tacs.grupo_4.entities.Sector;
+import tacs.grupo_4.entities.Ubicacion;
 import tacs.grupo_4.exceptions.AsientoNotFoundException;
 import tacs.grupo_4.repositories.AsientoRepository;
 import tacs.grupo_4.repositories.EventoRepository;
+import tacs.grupo_4.telegramBot.handlers.EventoHandler;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 class EventoServiceTest {

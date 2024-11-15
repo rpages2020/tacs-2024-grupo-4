@@ -184,4 +184,11 @@ public class EventoController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PutMapping("/cambiarIdUsuario/{id}")
+    public ResponseEntity<String> cambiarIdUsuario(@PathVariable String id) {
+        eventoService.cambiarIdUsuario(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 }
