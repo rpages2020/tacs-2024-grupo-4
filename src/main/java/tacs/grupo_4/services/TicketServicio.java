@@ -38,9 +38,10 @@ public class TicketServicio {
     public List<Ticket> obtenerTicketsPorUsuario(UUID usuarioId) {
         return ticketRepository.findByAsientoUsuario(usuarioId);
     }
+
     public Ticket obtenerTicketPorId(UUID id) {
         return ticketRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Ticket no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Ticket no encontrado"));
     }
 
     public Ticket cancelarTicket(UUID id) {
@@ -59,7 +60,15 @@ public class TicketServicio {
                 true,
                 asiento.getEventoNombre(),
                 asiento.sectorNombre()
-                );
+        );
         return ticketRepository.insert(ticket);
+    }
+
+    public long cantidadTicketsPorFecha(String fecha) {
+        return ticketRepository.countByFecha(fecha);
+    }
+
+    public long cantidadTicketsEntreFechas(String fecha1, String fecha2) {
+       return ticketRepository.countByFechaBetween(fecha1, fecha2);
     }
 }

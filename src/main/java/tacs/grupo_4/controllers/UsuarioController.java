@@ -119,4 +119,15 @@ public class UsuarioController {
         return new ResponseEntity<>(eventos, HttpStatus.OK);
     }
 
+    @GetMapping("/fechaAlta/{fecha}")
+    public long altasPorFecha(@PathVariable String fecha) {
+        return usuarioService.cantidadUsuariosPorFecha(fecha);
+    }
+
+    @GetMapping("/entreFechas/{fecha1}/{fecha2}")
+    public long altasEntreFechas(@PathVariable String fecha1, @PathVariable String fecha2) {
+        System.out.printf("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEee" + fecha2);
+        return usuarioService.cantidadAltasEntreFechas(fecha1, fecha2);
+    }
+
 }

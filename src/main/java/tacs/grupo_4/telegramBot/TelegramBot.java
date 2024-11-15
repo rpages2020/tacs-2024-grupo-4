@@ -9,6 +9,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import tacs.grupo_4.telegramBot.handlers.AdminHandler;
 import tacs.grupo_4.telegramBot.handlers.EventoHandler;
 import tacs.grupo_4.telegramBot.handlers.UsuarioHandler;
 
@@ -17,13 +18,16 @@ import tacs.grupo_4.telegramBot.handlers.UsuarioHandler;
 public class TelegramBot extends TelegramLongPollingBot {
     private final UsuarioHandler usuarioHandler;
     private final EventoHandler eventoHandler;
+    private final AdminHandler adminHandler;
     @Autowired
     public TelegramBot(@Value("${telegram.bot.token}") String botToken,
                        @Lazy UsuarioHandler usuarioHandler,
-                       @Lazy EventoHandler eventoHandler) {
+                       @Lazy EventoHandler eventoHandler,
+                       @Lazy AdminHandler adminHandler) {
         super(botToken);  // non-deprecated constructor
         this.usuarioHandler = usuarioHandler;
         this.eventoHandler = eventoHandler;
+        this.adminHandler = adminHandler;
     }
 
     @Override
@@ -51,8 +55,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                 parametros = parametrosString.split(",");
             }
             String respuesta = switch (comando) {
-                case "cancelarevento"   ->      eventoHandler.cancelarEvento(parametros, chatId, telegramUserId);
-                case "cerrarventa"      ->      eventoHandler.cerrarEvento(parametros, chatId, telegramUserId);
                 case "confirmarevento"  ->      eventoHandler.confirmarEvento(parametros, chatId, telegramUserId);
                 case "crearevento"      ->      eventoHandler.crearEvento(parametros, chatId, telegramUserId);
                 case "crearusuario"     ->      usuarioHandler.crearUsuario(parametros, chatId, telegramUserId);
@@ -66,6 +68,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "misreservas"      ->      usuarioHandler.misReservas(parametros, chatId, telegramUserId);
                 case "reservar"         ->      eventoHandler.reservarAsientoEnSector(parametros, chatId, telegramUserId);
                 case "whoami"           ->      usuarioHandler.whoami(parametros, chatId, telegramUserId);
+                case "altasusuariosporfecha" -> adminHandler.usuariosPorFecha(parametros, chatId, telegramUserId);
+                case "ticketsporfecha"  ->      adminHandler.ticketsPorFecha(parametros, chatId, telegramUserId);
+                case "cancelarevento"   ->      eventoHandler.cancelarEvento(parametros, chatId, telegramUserId);
+                case "cerrarventa"      ->      eventoHandler.cerrarEvento(parametros, chatId, telegramUserId);
                 default                 ->      bienvenida(nombre);
             };
             if (!respuesta.isEmpty()) {
@@ -129,5 +135,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         //Para correr fuera de docker
         //return "http://localhost";
     }
+
+
+
 
 }

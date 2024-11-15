@@ -48,4 +48,12 @@ public class UsuarioService {
     public List<Usuario> obtenerTodosLosUsuarios() {
         return usuarioRepository.findAll();
     }
+
+    public long cantidadUsuariosPorFecha(String fecha) {
+        return usuarioRepository.countByFechaAlta(fecha);
+    }
+
+   public long cantidadAltasEntreFechas(String fecha1, String fecha2) {
+        return  usuarioRepository.countByFechaAltaBetween(fecha1, fecha2);
+   }
 }

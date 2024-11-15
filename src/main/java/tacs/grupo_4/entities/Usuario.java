@@ -1,4 +1,6 @@
 package tacs.grupo_4.entities;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -29,7 +31,15 @@ public class Usuario {
     private long telegramUserId;
     @Indexed(unique = true)
     private int dni;
+    @Builder.Default
+    private String fechaAlta = formatFecha();
 
     @Version
     private Long version;
+
+    private static String formatFecha() {
+        LocalDateTime horaVenta = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy");
+        return horaVenta != null ? horaVenta.format(formatter) : null;
+    }
 }

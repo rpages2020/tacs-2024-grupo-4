@@ -13,7 +13,6 @@ import tacs.grupo_4.entities.Sector;
 import tacs.grupo_4.entities.Ticket;
 import tacs.grupo_4.repositories.AsientoRepository;
 import tacs.grupo_4.repositories.TicketRepository;
-import tacs.grupo_4.services.AsientoService;
 
 import java.time.LocalDateTime;
 import java.util.List;
