@@ -265,7 +265,7 @@ public class EventoHandler {
             return "eliminarEvento <eventoId>";
         }
         Usuario usuario = verificarUsusario(chatId, telegramUserId);
-        if (usuario != null) {
+        if (usuario != null && verificarAdmin(usuario)) {
             String eventoId = parametros[0];
             String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos/" + eventoId + "/usuario/" + usuario.getId();
             Mono<Void> responseMono = webClient.delete()
@@ -286,6 +286,10 @@ public class EventoHandler {
             );
         }
         return "";
+    }
+
+    private boolean verificarAdmin(Usuario usuario) {
+        return usuario.esAdmin(); //debería haber una autenticación
     }
 
 

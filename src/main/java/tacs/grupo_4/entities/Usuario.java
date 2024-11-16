@@ -33,7 +33,8 @@ public class Usuario {
     private int dni;
     @Builder.Default
     private String fechaAlta = formatFecha();
-
+    @Builder.Default
+    private boolean modoAdmin = false;
     @Version
     private Long version;
 
@@ -41,5 +42,9 @@ public class Usuario {
         LocalDateTime horaVenta = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy");
         return horaVenta != null ? horaVenta.format(formatter) : null;
+    }
+
+    public boolean esAdmin() {
+        return true;
     }
 }

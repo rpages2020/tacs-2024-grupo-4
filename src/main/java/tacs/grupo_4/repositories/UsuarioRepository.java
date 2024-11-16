@@ -17,4 +17,5 @@ public interface UsuarioRepository extends MongoRepository<Usuario, UUID> {
     long countByFechaAlta(String fecha);
 
     long countByFechaAltaBetween(String fechaInicio, String fechaFin);
+
 }

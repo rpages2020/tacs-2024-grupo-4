@@ -10,6 +10,7 @@ import tacs.grupo_4.repositories.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Profile("api")
@@ -56,4 +57,14 @@ public class UsuarioService {
    public long cantidadAltasEntreFechas(String fecha1, String fecha2) {
         return  usuarioRepository.countByFechaAltaBetween(fecha1, fecha2);
    }
+
+    public void modoAdminOn(UUID id) {
+       Optional<Usuario> usuario = usuarioRepository.findById(id);
+       usuario.get().setModoAdmin(true);
+    }
+
+    public void modoAdminOff(UUID id) {
+        Optional<Usuario> usuario = usuarioRepository.findById(id);
+        usuario.get().setModoAdmin(false);
+    }
 }

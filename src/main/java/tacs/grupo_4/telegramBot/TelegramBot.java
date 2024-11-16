@@ -67,6 +67,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "misreservas"      ->      usuarioHandler.misReservas(parametros, chatId, telegramUserId);
                 case "reservar"         ->      eventoHandler.reservarAsientoEnSector(parametros, chatId, telegramUserId);
                 case "whoami"           ->      usuarioHandler.whoami(parametros, chatId, telegramUserId);
+                case "adminmodeon"      ->      usuarioHandler.activarModoAdmin(chatId, telegramUserId);
+                case "adminmodeoff"     ->      usuarioHandler.descartivarModoAdmin(chatId, telegramUserId);
                 case "altasusuariosporfecha" -> adminHandler.usuariosPorFecha(parametros, chatId, telegramUserId);
                 case "ticketsporfecha"  ->      adminHandler.ticketsPorFecha(parametros, chatId, telegramUserId);
                 case "cancelarevento"   ->      eventoHandler.cancelarEvento(parametros, chatId, telegramUserId);
@@ -83,7 +85,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final String helpMensaje =
             """
                     Comandos disponibles:
-                    • cancelarEvento <eventoId>
                     • crearEvento <nombre>,<aaaa-mm-ddThora:minuto:segundo>,<descripcionEvento>,<nombreUbicacion>,<direccion>,<nombreSector1>,<capacidad1>,<precio1>,<nombreSector2>,<capacidad2>,<precio2>,...
                     • cerrarVenta <eventoId>
                     • confirmarEvento <eventoId>
@@ -95,6 +96,16 @@ public class TelegramBot extends TelegramLongPollingBot {
                     • misTickets
                     • reservar <eventoId>,<nombreSector>
                     • whoami
+                    • cancelarEvento <eventoId> (admin)
+                    • cerrarVenta <eventoId> (admin)
+                    • eliminarEvento <eventoId> (admin)
+                    • cambiarIdUsuario <eventoId> (admin)
+                    • altasUsuariosPorFecha <dd-mm-aa> (admin)
+                    • altasUsuariosPorFecha <dd-mm-aa>,<dd-mm-aa> (admin)
+                    • ticketsPorFecha <dd-mm-aa> (admin)
+                    • ticketsPorFecha <dd-mm-aa>,<dd-mm-aa> (admin)
+                    • eventosCreadosPorFecha <dd-mm-aa> (admin)
+                    • eventosCreadosPorFecha <dd-mm-aa>,<dd-mm-aa> (admin)
             """;
     private String bienvenida(String nombre) {
         return "¡Hola " + nombre + "! Soy el TicketBot."

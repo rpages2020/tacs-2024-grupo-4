@@ -6,6 +6,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import tacs.grupo_4.entities.Evento;
 import tacs.grupo_4.entities.Ticket;
 import tacs.grupo_4.entities.Usuario;
@@ -17,13 +25,6 @@ import tacs.grupo_4.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 
 import java.util.List;
@@ -127,6 +128,16 @@ public class UsuarioController {
     @GetMapping("/entreFechas/{fecha1}/{fecha2}")
     public long altasEntreFechas(@PathVariable String fecha1, @PathVariable String fecha2) {
         return usuarioService.cantidadAltasEntreFechas(fecha1, fecha2);
+    }
+
+    @PutMapping("/{id}/adminModeOn")
+    public void adminModeOn(@PathVariable String id) {
+        usuarioService.modoAdminOn(UUID.fromString(id));
+    }
+
+    @PutMapping("/{id}/adminModeOff")
+    public void admonModeOff(@PathVariable String id) {
+        usuarioService.modoAdminOff(UUID.fromString(id));
     }
 
 }

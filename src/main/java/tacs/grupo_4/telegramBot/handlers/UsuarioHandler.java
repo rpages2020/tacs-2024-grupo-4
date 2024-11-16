@@ -88,6 +88,20 @@ public class UsuarioHandler {
                 })
                 .bodyToMono(Usuario.class);
     }
+
+    public Mono<Usuario> verificarAdmin(Long telegramUserId) {
+        String url = telegramBot.getEnvBaseUrl() + ":8080/api/usuarios/telegram/" + telegramUserId;
+
+        return webClient.get()
+                .uri(url)
+                .retrieve()
+                .onStatus(status -> status.value() == 404, clientResponse -> {
+                    return Mono.just(new UsuarioNotFoundException());
+                })
+                .bodyToMono(Usuario.class);
+    }
+
+
     public String misReservas(String[] mensaje, String chatId, Long telegramUserId) {
         if (mensaje.length != 0) {
             return "No se esperaban parámetros";
@@ -121,5 +135,56 @@ public class UsuarioHandler {
             return null;
         }
         return usuario;
+    }
+
+//    public boolean verificarAdmin(Usuario usuario, String chatId) {
+//        String url = telegramBot.getEnvBaseUrl() + ":8080/api/usuarios/esAdmin/" + usuario.getId();
+//        Mono<Boolean> responseMono = webClient.get()
+//                .uri(url)
+//                .retrieve()
+//                .bodyToMono(new ParameterizedTypeReference<Boolean>() {
+//                });
+//        responseMono.subscribe(
+//                _ -> telegramBot.enviarMensaje(chatId, ""),
+//                error -> telegramBot.enviarMensaje(chatId,
+//                        "Hubo un error: " + error.getMessage())
+//        );
+//     return Boolean.TRUE.equals(responseMono.block());
+//    }
+
+    public String activarModoAdmin(String chatId, Long telegramUserId) {
+        Usuario usuario = verificarUsusario(chatId, telegramUserId);
+        if (usuario != null) {
+            String url = telegramBot.getEnvBaseUrl() + ":8080/api/usuarios/esAdmin/adminModeOn/" + usuario.getId();
+            Mono<Boolean> responseMono = webClient.get()
+                    .uri(url)
+                    .retrieve()
+                    .bodyToMono(new ParameterizedTypeReference<Boolean>() {
+                    });
+            responseMono.subscribe(
+                    _ -> telegramBot.enviarMensaje(chatId, "Mono admin on"),
+                    error -> telegramBot.enviarMensaje(chatId,
+                            "Hubo un error: " + error.getMessage())
+            );
+        }
+        return "Admin Mode ON.";
+    }
+
+    public String descartivarModoAdmin(String chatId, Long telegramUserId) {
+        Usuario usuario = verificarUsusario(chatId, telegramUserId);
+        if (usuario != null) {
+            String url = telegramBot.getEnvBaseUrl() + ":8080/api/usuarios/adminModeOff/" + usuario.getId();
+            Mono<Boolean> responseMono = webClient.get()
+                    .uri(url)
+                    .retrieve()
+                    .bodyToMono(new ParameterizedTypeReference<Boolean>() {
+                    });
+            responseMono.subscribe(
+                    _ -> telegramBot.enviarMensaje(chatId, "M"),
+                    error -> telegramBot.enviarMensaje(chatId,
+                            "Hubo un error: " + error.getMessage())
+            );
+        }
+        return "Admin Mode OFF.";
     }
 }
