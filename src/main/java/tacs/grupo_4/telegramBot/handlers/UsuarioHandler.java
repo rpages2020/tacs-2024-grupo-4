@@ -169,7 +169,7 @@ public class UsuarioHandler {
         if (mensaje.length == 1) {  // si pasa dni y es admin, modificar ese usuario
             if (verificarAdmin(chatId, telegramUserId) == null) {
                 return "";
-            };
+            }
             int dni = Integer.parseInt(mensaje[0]);
             usuario = findByDni(dni).block();
         }
@@ -199,7 +199,7 @@ public class UsuarioHandler {
         if (mensaje.length == 1) {  // si pasa dni y es admin, modificar ese usuario
             if (verificarAdmin(chatId, telegramUserId) == null) {
                 return "";
-            };
+            }
             int dni = Integer.parseInt(mensaje[0]);
             usuario = findByDni(dni).block();
         }
