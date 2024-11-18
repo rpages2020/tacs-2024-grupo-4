@@ -1,6 +1,7 @@
 package tacs.grupo_4.repositories;
 
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 import tacs.grupo_4.entities.Ticket;
@@ -15,4 +16,9 @@ public interface TicketRepository extends MongoRepository<Ticket, UUID> {
     long countByFecha(String fecha);
 
     long countByFechaBetween(String fecha1, String fecha2);
+
+    @Aggregation(pipeline = {
+            "{ '$group': { '_id': null, 'totalPrice': { '$sum': '$precio' } } }"
+    })
+    Long sumAllPrecios();
 }

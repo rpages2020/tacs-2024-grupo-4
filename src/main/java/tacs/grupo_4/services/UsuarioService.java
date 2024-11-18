@@ -59,12 +59,14 @@ public class UsuarioService {
    }
 
     public void modoAdminOn(UUID id) {
-       Optional<Usuario> usuario = usuarioRepository.findById(id);
-       usuario.get().setModoAdmin(true);
+       Usuario usuario = usuarioRepository.findById(id).get();
+       usuario.setModoAdmin(true);
+       usuarioRepository.save(usuario);
     }
 
     public void modoAdminOff(UUID id) {
-        Optional<Usuario> usuario = usuarioRepository.findById(id);
-        usuario.get().setModoAdmin(false);
+        Usuario usuario = usuarioRepository.findById(id).get();
+        usuario.setModoAdmin(false);
+        usuarioRepository.save(usuario);
     }
 }

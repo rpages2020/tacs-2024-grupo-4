@@ -289,7 +289,7 @@ public class EventoHandler {
     }
 
     private boolean verificarAdmin(Usuario usuario) {
-        return usuario.esAdmin(); //debería haber una autenticación
+        return usuario.isModoAdmin(); //debería haber una autenticación
     }
 
 
@@ -297,7 +297,7 @@ public class EventoHandler {
         Mono<Usuario> usuarioAsync = usuarioHandler.findByTelegramId(telegramUserId);
         Usuario usuario;
         try {
-            usuario = usuarioAsync.block(); //Espero de forma sincronica
+            usuario = usuarioAsync.block(); //Espero de forma sincrona
         } catch (UsuarioNotFoundException e) {
             telegramBot.enviarMensaje(chatId, "Acceso denegado");
             return null;

@@ -131,13 +131,15 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}/adminModeOn")
-    public void adminModeOn(@PathVariable String id) {
+    public ResponseEntity<Boolean> adminModeOn(@PathVariable String id) {
         usuarioService.modoAdminOn(UUID.fromString(id));
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
     @PutMapping("/{id}/adminModeOff")
-    public void admonModeOff(@PathVariable String id) {
+    public ResponseEntity<Boolean> admonModeOff(@PathVariable String id) {
         usuarioService.modoAdminOff(UUID.fromString(id));
+        return new ResponseEntity<>(false, HttpStatus.OK);
     }
 
 }

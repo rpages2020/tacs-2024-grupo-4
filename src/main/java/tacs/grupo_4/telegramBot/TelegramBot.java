@@ -55,27 +55,28 @@ public class TelegramBot extends TelegramLongPollingBot {
                 parametros = parametrosString.split(",");
             }
             String respuesta = switch (comando) {
-                case "confirmarevento"  ->      eventoHandler.confirmarEvento(parametros, chatId, telegramUserId);
-                case "crearevento"      ->      eventoHandler.crearEvento(parametros, chatId, telegramUserId);
-                case "crearusuario"     ->      usuarioHandler.crearUsuario(parametros, chatId, telegramUserId);
-                case "ejemplos"         ->      ejemplos(chatId);
-                case "eventos"          ->      eventoHandler.eventos(parametros, chatId);
-                case "help"             ->      helpMensaje;
-                case "hola"             ->      "chau";
-                case "miseventos"       ->      eventoHandler.misEventos(parametros, chatId, telegramUserId);
-                case "mistickets"       ->      usuarioHandler.misReservas(parametros, chatId, telegramUserId);
-                case "misreservas"      ->      usuarioHandler.misReservas(parametros, chatId, telegramUserId);
-                case "reservar"         ->      eventoHandler.reservarAsientoEnSector(parametros, chatId, telegramUserId);
-                case "whoami"           ->      usuarioHandler.whoami(parametros, chatId, telegramUserId);
-                case "adminmodeon"      ->      usuarioHandler.activarModoAdmin(chatId, telegramUserId);
-                case "adminmodeoff"     ->      usuarioHandler.descartivarModoAdmin(chatId, telegramUserId);
-                case "altasusuariosporfecha" -> adminHandler.usuariosPorFecha(parametros, chatId, telegramUserId);
-                case "ticketsporfecha"  ->      adminHandler.ticketsPorFecha(parametros, chatId, telegramUserId);
-                case "cancelarevento"   ->      eventoHandler.cancelarEvento(parametros, chatId, telegramUserId);
-                case "cerrarventa"      ->      eventoHandler.cancelarEvento(parametros, chatId, telegramUserId);
-                case "eliminarevento"   ->      eventoHandler.eliminarEvento(parametros, chatId, telegramUserId);
-                case "cambiaridusuario" ->      eventoHandler.cambiarIdUsuario(parametros, chatId, telegramUserId);
-                default                 ->      bienvenida(nombre);
+                case "confirmarevento"          ->      eventoHandler.confirmarEvento(parametros, chatId, telegramUserId);
+                case "crearevento"              ->      eventoHandler.crearEvento(parametros, chatId, telegramUserId);
+                case "crearusuario"             ->      usuarioHandler.crearUsuario(parametros, chatId, telegramUserId);
+                case "ejemplos"                 ->      ejemplos(chatId);
+                case "estadisticas"             ->      adminHandler.estadisticas(parametros, chatId, telegramUserId);
+                case "eventos"                  ->      eventoHandler.eventos(parametros, chatId);
+                case "help"                     ->      helpMensaje;
+                case "hola"                     ->      "chau";
+                case "miseventos"               ->      eventoHandler.misEventos(parametros, chatId, telegramUserId);
+                case "mistickets"               ->      usuarioHandler.misReservas(parametros, chatId, telegramUserId);
+                case "misreservas"              ->      usuarioHandler.misReservas(parametros, chatId, telegramUserId);
+                case "reservar"                 ->      eventoHandler.reservarAsientoEnSector(parametros, chatId, telegramUserId);
+                case "whoami"                   ->      usuarioHandler.whoami(parametros, chatId, telegramUserId);
+                case "adminmodeon"              ->      usuarioHandler.activarModoAdmin(parametros, chatId, telegramUserId);
+                case "adminmodeoff"             ->      usuarioHandler.descartivarModoAdmin(parametros, chatId, telegramUserId);
+                case "altasusuariosporfecha"    ->      adminHandler.usuariosPorFecha(parametros, chatId, telegramUserId);
+                case "ticketsporfecha"          ->      adminHandler.ticketsPorFecha(parametros, chatId, telegramUserId);
+                case "cancelarevento"           ->      eventoHandler.cancelarEvento(parametros, chatId, telegramUserId);
+                case "cerrarventa"              ->      eventoHandler.cancelarEvento(parametros, chatId, telegramUserId);
+                case "eliminarevento"           ->      eventoHandler.eliminarEvento(parametros, chatId, telegramUserId);
+                case "cambiaridusuario"         ->      eventoHandler.cambiarIdUsuario(parametros, chatId, telegramUserId);
+                default                         ->      bienvenida(nombre);
             };
             if (!respuesta.isEmpty()) {
                 enviarMensaje(chatId, respuesta);
@@ -96,16 +97,20 @@ public class TelegramBot extends TelegramLongPollingBot {
                     • misTickets
                     • reservar <eventoId>,<nombreSector>
                     • whoami
-                    • cancelarEvento <eventoId> (admin)
-                    • cerrarVenta <eventoId> (admin)
-                    • eliminarEvento <eventoId> (admin)
-                    • cambiarIdUsuario <eventoId> (admin)
-                    • altasUsuariosPorFecha <dd-mm-aa> (admin)
-                    • altasUsuariosPorFecha <dd-mm-aa>,<dd-mm-aa> (admin)
-                    • ticketsPorFecha <dd-mm-aa> (admin)
-                    • ticketsPorFecha <dd-mm-aa>,<dd-mm-aa> (admin)
-                    • eventosCreadosPorFecha <dd-mm-aa> (admin)
-                    • eventosCreadosPorFecha <dd-mm-aa>,<dd-mm-aa> (admin)
+                    
+                    Comandos Admin:
+                    • cancelarEvento <eventoId>
+                    • cerrarVenta <eventoId>
+                    • eliminarEvento <eventoId>
+                    • estadisticas
+                    • cambiarIdUsuario <eventoId>
+                    • estadisticas
+                    • altasUsuariosPorFecha <dd-mm-aa>
+                    • altasUsuariosPorFecha <dd-mm-aa>,<dd-mm-aa>
+                    • ticketsPorFecha <dd-mm-aa>
+                    • ticketsPorFecha <dd-mm-aa>,<dd-mm-aa>
+                    • eventosCreadosPorFecha <dd-mm-aa>
+                    • eventosCreadosPorFecha <dd-mm-aa>,<dd-mm-aa>
             """;
     private String bienvenida(String nombre) {
         return "¡Hola " + nombre + "! Soy el TicketBot."
