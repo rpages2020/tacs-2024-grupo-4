@@ -20,6 +20,7 @@ import tacs.grupo_4.repositories.UsuarioRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Profile("api")
@@ -66,17 +67,21 @@ public class EventoService {
 
     @Transactional
     public Asiento reservarAsiento(UUID eventoId, String sectorNombre, String nroAsiento, UUID usuario) {
-        List<Asiento> asientos = asientoRepository.findByEventoIdAndSectorNombreAndNroAsientoAndEstaReservado(eventoId, sectorNombre, nroAsiento, false);
-        if (asientos.isEmpty()) {
-            throw new AsientoNotFoundException();
+        Optional<Asiento> asientoOpt = asientoRepository.findByEventoIdAndSectorNombreAndNroAsientoAndEstaReservado(eventoId, sectorNombre, nroAsiento, false)
+                .stream().findFirst();
+
+        if (!asientoOpt.isPresent()) {
+            throw new AsientoNotFoundException("No hay asientos disponibles en el sector o el asiento ya está reservado.");
         }
 
-        Asiento asiento = asientos.getFirst();
+        Asiento asiento = asientoOpt.get();
         asiento.setEstaReservado(true);
         asiento.setUsuario(usuario);
         asiento.setReservadoEn(LocalDateTime.now());
+
         return asientoRepository.save(asiento);
     }
+
 
     public Evento crearSector(UUID eventoId, Sector sector) {
         Evento evento = eventoRepository.findById(eventoId)
@@ -112,7 +117,7 @@ public class EventoService {
         if (asiento != null) {
             this.sumarReserva(evento, sectorNombre);
         } else {
-            throw new AsientoNotFoundException();
+            throw new AsientoNotFoundException("");
         }
 
         return asiento;

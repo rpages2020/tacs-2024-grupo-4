@@ -21,7 +21,8 @@ public class AsientoService {
 
     public void liberarAsiento(UUID asientoId) {
         Asiento asiento = asientoRepository.findById(asientoId)
-                .orElseThrow(AsientoNotFoundException::new);
+                .orElseThrow(() -> new AsientoNotFoundException("Asiento no encontrado con el ID: " + asientoId));
+
         asiento.setEstaReservado(false);
         asientoRepository.save(asiento);
     }

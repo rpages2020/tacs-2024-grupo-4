@@ -9,6 +9,7 @@ import tacs.grupo_4.entities.Asiento;
 import tacs.grupo_4.entities.Ticket;
 import tacs.grupo_4.entities.Sector;
 import tacs.grupo_4.entities.Evento;
+import tacs.grupo_4.entities.Ubicacion;
 import tacs.grupo_4.repositories.AsientoRepository;
 import tacs.grupo_4.repositories.UsuarioRepository;
 import tacs.grupo_4.repositories.EventoRepository;
@@ -90,48 +91,68 @@ public class DataInitializer implements CommandLineRunner {
     private void initializeEventos() {
         System.out.println("initializeEventos carga de datos...");
 
-            // Obtener usuarios para asignar a los eventos
-            List<Usuario> admins = usuarioRepository.findAll().subList(0, 2);
+        // Obtener usuarios para asignar a los eventos
+        List<Usuario> users = usuarioRepository.findAll();
+        Random r =  new Random();
+        List<Evento> eventos = new ArrayList<>();
 
-            List<Evento> eventos = new ArrayList<>();
+        List<Ubicacion> ubicaciones = Arrays.asList(
+                new Ubicacion(UUID.randomUUID(), "Estadio Monumental", 83000L, "Av. Figueroa Alcorta 7597, Buenos Aires, Argentina"),
+                new Ubicacion(UUID.randomUUID(), "Teatro Colón", 2500L, "Cerrito 628, Buenos Aires, Argentina"),
+                new Ubicacion(UUID.randomUUID(), "Arena Ciudad de México", 22000L, "Av. Conscripto 3110, Ciudad de México, México")
+        );
 
-            for (int i = 1; i <= 7; i++) {
-                Usuario usuario = admins.get(i % 2); // Asignamos admin alternado
+        List<String> nombresEventos = Arrays.asList(
+                "Concierto de Coldplay",
+                "Obra de teatro: Hamlet",
+                "Fútbol: Final Copa Libertadores 2024",
+                "Festival Internacional de Jazz",
+                "Conferencia de Tecnología Web",
+                "Expo Internacional de Innovación",
+                "Gran Show de Circo"
+        );
 
-                // Crear sectores
-                Sector sector1 = Sector.builder()
-                        .id(UUID.randomUUID())
-                        .nombre("Sector " + (i) + " A")
-                        .capacidadTotal(100)
-                        .reservas(0)
-                        .precio(1000.0 + (i * 100))
-                        .build();
+        for (int i = 0; i < 7; i++) {
+            Usuario usuario = users.get(r.nextInt(0, (int) usuarioRepository.count() - 1));
 
-                Sector sector2 = Sector.builder()
-                        .id(UUID.randomUUID())
-                        .nombre("Sector " + (i) + " B")
-                        .capacidadTotal(150)
-                        .reservas(0)
-                        .precio(1500.0 + (i * 200))
-                        .build();
+            // Selección aleatoria de ubicación y nombre de evento
+            Ubicacion ubicacion = ubicaciones.get(r.nextInt(ubicaciones.size()));
+            String nombreEvento = nombresEventos.get(r.nextInt(nombresEventos.size()));
 
-                // Crear evento
-                Evento evento = Evento.builder()
-                        .id(UUID.randomUUID())
-                        .nombre("Evento " + i)
-                        .fecha(LocalDateTime.of(2024, 12, i, 20, 0))
-                        .descripcion("Descripción del evento " + i)
-                        .usuario(usuario.getId())
-                        .estaConfirmado(true)
-                        .estaActivo(true)
-                        .sectores(Arrays.asList(sector1, sector2))
-                        .build();
+            // Crear sectores
+            Sector sector1 = Sector.builder()
+                    .id(UUID.randomUUID())
+                    .nombre("Sector " + (i) + " A")
+                    .capacidadTotal(100)
+                    .reservas(0)
+                    .precio(1000.0 + (i * 100))
+                    .build();
 
-                eventos.add(evento);
-            }
+            Sector sector2 = Sector.builder()
+                    .id(UUID.randomUUID())
+                    .nombre("Sector " + (i) + " B")
+                    .capacidadTotal(150)
+                    .reservas(0)
+                    .precio(1500.0 + (i * 200))
+                    .build();
 
-            eventoRepository.saveAll(eventos);
+            // Crear evento
+            Evento evento = Evento.builder()
+                    .id(UUID.randomUUID())
+                    .nombre(nombreEvento)
+                    .fecha(LocalDateTime.of(2024, 12, i + 1, 20, 0))
+                    .descripcion("Descripción del evento " + i)
+                    .usuario(usuario.getId())
+                    .estaConfirmado(true)
+                    .ubicacion(ubicacion)
+                    .estaActivo(true)
+                    .sectores(Arrays.asList(sector1, sector2))
+                    .build();
 
+            eventos.add(evento);
+        }
+
+        eventoRepository.saveAll(eventos);
     }
 
     private void initializeTickets() {

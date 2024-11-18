@@ -112,8 +112,14 @@ public class EventoHandler {
                     });
 
             responseMono.subscribe(
-                    response -> telegramBot.enviarMensaje(chatId,
-                            "Tus eventos son: \n\n" + ImpresoraJSON.imprimirEventosYEstadisticas(response)),
+                    response -> {
+                        if (response.isEmpty()) {
+                            telegramBot.enviarMensaje(chatId, "No tienes eventos.");
+                        } else {
+                            telegramBot.enviarMensaje(chatId,
+                                    "Tus eventos son: \n\n" + ImpresoraJSON.imprimirEventosYEstadisticas(response));
+                        }
+                    },
                     error -> telegramBot.enviarMensaje(chatId,
                             "Hubo un error: " + error.getMessage())
             );
@@ -135,8 +141,16 @@ public class EventoHandler {
                 });
 
         responseMono.subscribe(
-                response -> telegramBot.enviarMensaje(chatId,
-                        "Los eventos son: \n\n" + ImpresoraJSON.imprimirEventos(response)),
+                response -> {
+                    // Comprobar si la lista de eventos está vacía
+                    if (response.isEmpty()) {
+                        telegramBot.enviarMensaje(chatId, "No hay eventos disponibles.");
+                    } else {
+                        // Si hay eventos, imprimirlos
+                        telegramBot.enviarMensaje(chatId,
+                                "Los eventos son: \n\n" + ImpresoraJSON.imprimirEventos(response));
+                    }
+                },
                 error -> telegramBot.enviarMensaje(chatId,
                         "Hubo un error: " + error.getMessage())
         );
@@ -146,34 +160,35 @@ public class EventoHandler {
 
     public String reservarAsientoEnSector(String[] mensaje, String chatId, Long telegramUserId) {
         if (mensaje.length != 2) {
-            return "reservar <eventoId>,<nombreSector>";
+            return "Uso incorrecto. Formato correcto: reservar <eventoId>,<nombreSector>";
         }
         Usuario usuario = verificarUsusario(chatId, telegramUserId);
         if (usuario != null) {
-
             String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos/" + mensaje[0] + "/sector/" + mensaje[1] + "/usuario/" + usuario.getId();
+
             Mono<Ticket> responseMono = webClient.put()
                     .uri(url)
                     .retrieve()
-                    .onStatus(status -> status.value() == 412, clientResponse -> {
-                        return Mono.just(new RuntimeException("No hay asientos disponibles en ese evento o sector."));
-                    }).onStatus(status -> status.value() == 409, clientResponse -> {
-                        return Mono.just(new RuntimeException("El evento ya no esta disponible"));
+                    .onStatus(status -> status.is4xxClientError(), clientResponse -> {
+                        // Manejo de errores 4xx de manera genérica
+                        return clientResponse.bodyToMono(String.class)
+                                .flatMap(body -> Mono.error(new RuntimeException("Error al procesar la reserva: " + body)));
                     })
-                    .onStatus(status -> status.value() == 500, clientResponse -> {
-                        return Mono.just(new RuntimeException("Parametros inválidos"));
+                    .onStatus(status -> status.is5xxServerError(), clientResponse -> {
+                        // Manejo de errores 5xx
+                        return clientResponse.bodyToMono(String.class)
+                                .flatMap(body -> Mono.error(new RuntimeException("Error interno del servidor: " + body)));
                     })
                     .bodyToMono(Ticket.class);
 
             responseMono.subscribe(
-                    response -> telegramBot.enviarMensaje(chatId,
-                            "Asiento reservado exitosamente: \n" + ImpresoraJSON.imprimir(response)),
-                    error -> telegramBot.enviarMensaje(chatId,
-                            "Hubo un error: " + error.getMessage())
+                    response -> telegramBot.enviarMensaje(chatId, "Reserva realizada con éxito: \n" + ImpresoraJSON.imprimir(response)),
+                    error -> telegramBot.enviarMensaje(chatId, "Hubo un error al reservar el asiento: " + error.getMessage())
             );
         }
         return "";
     }
+
 
     public String confirmarEvento(String[] mensaje, String chatId, Long telegramUserId) {
         if (mensaje.length != 1) {
