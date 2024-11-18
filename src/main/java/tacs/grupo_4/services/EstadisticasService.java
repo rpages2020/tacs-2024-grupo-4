@@ -1,10 +1,8 @@
 package tacs.grupo_4.services;
 
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import tacs.grupo_4.entities.Estadisticas;
-import tacs.grupo_4.repositories.AsientoRepository;
 import tacs.grupo_4.repositories.EventoRepository;
 import tacs.grupo_4.repositories.TicketRepository;
 import tacs.grupo_4.repositories.UsuarioRepository;

@@ -1,13 +1,17 @@
 package tacs.grupo_4.telegramBot;
 
-import tacs.grupo_4.entities.*;
+import tacs.grupo_4.entities.Estadisticas;
+import tacs.grupo_4.entities.Evento;
+import tacs.grupo_4.entities.Sector;
+import tacs.grupo_4.entities.Usuario;
+import tacs.grupo_4.entities.Ticket;
 
 import java.util.List;
 
 public class ImpresoraJSON {
     public static String imprimir(Estadisticas estadisticas) {
         return
-                """     
+                """
                    Total Usuarios: %d
                    Total Eventos: %d
                    Total Recaudado: %f

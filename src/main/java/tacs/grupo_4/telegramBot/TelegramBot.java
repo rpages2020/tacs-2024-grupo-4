@@ -97,7 +97,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     • misTickets
                     • reservar <eventoId>,<nombreSector>
                     • whoami
-                    
+
                     Comandos Admin:
                     • cancelarEvento <eventoId>
                     • cerrarVenta <eventoId>

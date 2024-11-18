@@ -13,6 +13,7 @@ import java.util.UUID;
 @Repository
 public interface UsuarioRepository extends MongoRepository<Usuario, UUID> {
     Optional<Usuario> findByTelegramUserId(Long id);
+    Optional<Usuario> findByDni(int dni);
 
     long countByFechaAlta(String fecha);
 

@@ -24,7 +24,7 @@ public class AdminHandler {
         this.usuarioHandler = usuarioHandler;
     }
 
-    public String estadisticas (String[] mensaje, String chatId, Long telegramUserId) {
+    public String estadisticas(String[] mensaje, String chatId, Long telegramUserId) {
         if (mensaje.length != 0) {
             return "No se esperaban parámetros";
         }
@@ -49,6 +49,9 @@ public class AdminHandler {
     public String ticketsPorFecha(String[] mensaje, String chatId, Long telegramUserId) {
         if (mensaje.length < 1 || mensaje.length > 2) {
             return "ticketsPorFecha <dd-mm-aa> \n ticketsPorFecha  <dd-mm-aa>,<dd-mm-aa>";
+        }
+        if (usuarioHandler.verificarAdmin(chatId, telegramUserId) == null) {
+            return "";
         }
         if (mensaje.length == 1) {
         String fecha = mensaje[0];
@@ -91,6 +94,9 @@ public class AdminHandler {
     public String usuariosPorFecha(String[] mensaje, String chatId, Long telegramUserId) {
         if (mensaje.length < 1 || mensaje.length > 2) {
             return "altasUsuariosPorFecha <dd-mm-aa> \n altasUsuariosPorFecha <dd-mm-aa>,<dd-mm-aa>";
+        }
+        if (usuarioHandler.verificarAdmin(chatId, telegramUserId) == null) {
+            return "";
         }
         if (mensaje.length == 1) {
             String fecha = mensaje[0];

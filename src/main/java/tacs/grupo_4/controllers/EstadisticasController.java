@@ -4,13 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import tacs.grupo_4.entities.Estadisticas;
-import tacs.grupo_4.entities.Ticket;
-import tacs.grupo_4.repositories.EventoRepository;
 import tacs.grupo_4.services.EstadisticasService;
-
-import java.util.UUID;
 
 @Profile("api")
 @RestController

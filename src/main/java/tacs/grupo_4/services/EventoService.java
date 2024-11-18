@@ -9,11 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import tacs.grupo_4.entities.Asiento;
 import tacs.grupo_4.entities.Evento;
 import tacs.grupo_4.entities.Sector;
+import tacs.grupo_4.entities.Usuario;
 import tacs.grupo_4.exceptions.AsientoNotFoundException;
 import tacs.grupo_4.exceptions.EventoNotFoundException;
 import tacs.grupo_4.repositories.AsientoRepository;
 import tacs.grupo_4.repositories.EventoRepository;
 import org.springframework.stereotype.Service;
+import tacs.grupo_4.repositories.UsuarioRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,11 +30,13 @@ public class EventoService {
     private final EventoRepository eventoRepository;
     private final AsientoRepository asientoRepository;
     private final MongoTemplate asientoTemplate;
+    private final UsuarioRepository usuarioRepository;
 
-    public EventoService(EventoRepository eventoRepository, AsientoRepository asientoRepository, MongoTemplate asientoTemplate) {
+    public EventoService(EventoRepository eventoRepository, AsientoRepository asientoRepository, MongoTemplate asientoTemplate, UsuarioRepository usuarioRepository) {
         this.eventoRepository = eventoRepository;
         this.asientoRepository = asientoRepository;
         this.asientoTemplate = asientoTemplate; // abstracción de menor nivel que el repository
+        this.usuarioRepository = usuarioRepository;
     }
 
     public Evento crearEvento(Evento evento) {
@@ -155,7 +159,8 @@ public class EventoService {
     public void cancelarEvento(UUID id, UUID usuarioId) {
         Evento evento = eventoRepository.findById(id)
                 .orElseThrow(EventoNotFoundException::new);
-        if (!usuarioId.equals(evento.getUsuario())) {
+        Usuario usuario = usuarioRepository.findById(evento.getUsuario()).get();
+        if (!usuarioId.equals(evento.getUsuario()) && !usuario.isModoAdmin()) {
             throw new RuntimeException("Acceso denegado.");
         }
         evento.setEstaActivo(false);
@@ -165,7 +170,8 @@ public class EventoService {
     @Transactional
     public void eliminarEvento(UUID id, UUID usuarioId) {
         Evento evento = obtenerEventoPorId(id);
-        if (!usuarioId.equals(evento.getUsuario())) {
+        Usuario usuario = usuarioRepository.findById(evento.getUsuario()).get();
+        if (!usuarioId.equals(evento.getUsuario()) && !usuario.isModoAdmin()) {
             throw new RuntimeException("Acceso denegado.");
         }
         eventoRepository.delete(evento);
