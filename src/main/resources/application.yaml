@@ -1,11 +1,9 @@
-# Common
+# Común para todos los perfiles
 server:
   port: 8080
 
-#API
+# Configuración para el perfil 'api'
 ---
-server:
-  forward-headers-strategy: framework
 spring:
   config:
     activate:
@@ -27,7 +25,6 @@ telegram:
 
 logging:
   level:
-    #root: DEBUG
     org:
       springframework:
         data:
@@ -36,6 +33,7 @@ logging:
               MongoTemplate: DEBUG
               index:
                 MongoPersistentEntityIndexCreator: DEBUG
+
 springdoc:
   swagger-ui:
     path: /api-docs
@@ -43,7 +41,7 @@ springdoc:
   api-docs:
     enabled: true
 
-# BOT
+# Configuración para el perfil 'bot'
 ---
 spring:
   config:
