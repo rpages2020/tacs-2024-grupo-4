@@ -89,8 +89,8 @@ public class UsuarioHandler {
                 .bodyToMono(Usuario.class);
     }
 
-    public Mono<Usuario> verificarAdmin(Long telegramUserId) {
-        String url = telegramBot.getEnvBaseUrl() + ":8080/api/usuarios/telegram/" + telegramUserId;
+    public Mono<Usuario> findByDni(int dni) {
+        String url = telegramBot.getEnvBaseUrl() + ":8080/api/usuarios/dni/" + dni;
 
         return webClient.get()
                 .uri(url)
@@ -99,6 +99,15 @@ public class UsuarioHandler {
                     return Mono.just(new UsuarioNotFoundException());
                 })
                 .bodyToMono(Usuario.class);
+    }
+
+    public Usuario verificarAdmin(String chatId, Long telegramUserId) {
+        Usuario usuario = verificarUsusario(chatId, telegramUserId);
+        if (usuario == null || !usuario.isModoAdmin()) {
+            telegramBot.enviarMensaje(chatId, "Acceso denegado - No tiene permisos de administrador");
+            return null;
+        }
+        return usuario;
     }
 
 
@@ -152,39 +161,64 @@ public class UsuarioHandler {
 //     return Boolean.TRUE.equals(responseMono.block());
 //    }
 
-    public String activarModoAdmin(String chatId, Long telegramUserId) {
+    public String activarModoAdmin(String[] mensaje, String chatId, Long telegramUserId) {
+        if (mensaje.length != 0 && mensaje.length != 1) {
+            return "No se esperaban parámetros";
+        }
         Usuario usuario = verificarUsusario(chatId, telegramUserId);
+        if (mensaje.length == 1) {  // si pasa dni y es admin, modificar ese usuario
+            if (verificarAdmin(chatId, telegramUserId) == null) {
+                return "";
+            };
+            int dni = Integer.parseInt(mensaje[0]);
+            usuario = findByDni(dni).block();
+        }
         if (usuario != null) {
-            String url = telegramBot.getEnvBaseUrl() + ":8080/api/usuarios/esAdmin/adminModeOn/" + usuario.getId();
-            Mono<Boolean> responseMono = webClient.get()
+            UUID usuarioId = usuario.getId();
+            String url = telegramBot.getEnvBaseUrl() + ":8080/api/usuarios/" + usuarioId + "/adminModeOn";
+            Mono<Boolean> responseMono = webClient.put()
                     .uri(url)
                     .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<Boolean>() {
-                    });
+                    .onStatus(status -> status.value() != 200, clientResponse -> {
+                        return Mono.just(new RuntimeException("Error"));
+                    })
+                    .bodyToMono(Boolean.class);
             responseMono.subscribe(
-                    _ -> telegramBot.enviarMensaje(chatId, "Mono admin on"),
-                    error -> telegramBot.enviarMensaje(chatId,
-                            "Hubo un error: " + error.getMessage())
+                    response -> telegramBot.enviarMensaje(chatId, "Se ha activado el modo admin"),
+                    error -> telegramBot.enviarMensaje(chatId, "Hubo un error: " + error.getMessage())
             );
         }
-        return "Admin Mode ON.";
+        return "";
     }
 
-    public String descartivarModoAdmin(String chatId, Long telegramUserId) {
+    public String descartivarModoAdmin(String[] mensaje, String chatId, Long telegramUserId) {
+        if (mensaje.length != 0 && mensaje.length != 1) {
+            return "No se esperaban parámetros";
+        }
         Usuario usuario = verificarUsusario(chatId, telegramUserId);
+        if (mensaje.length == 1) {  // si pasa dni y es admin, modificar ese usuario
+            if (verificarAdmin(chatId, telegramUserId) == null) {
+                return "";
+            };
+            int dni = Integer.parseInt(mensaje[0]);
+            usuario = findByDni(dni).block();
+        }
         if (usuario != null) {
-            String url = telegramBot.getEnvBaseUrl() + ":8080/api/usuarios/adminModeOff/" + usuario.getId();
-            Mono<Boolean> responseMono = webClient.get()
+            UUID usuarioId = usuario.getId();
+            String url = telegramBot.getEnvBaseUrl() + ":8080/api/usuarios/" + usuarioId + "/adminModeOff";
+            Mono<Boolean> responseMono = webClient.put()
                     .uri(url)
                     .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<Boolean>() {
-                    });
+                    .onStatus(status -> status.value() != 200, clientResponse -> {
+                        return Mono.just(new RuntimeException("Error"));
+                    })
+                    .bodyToMono(Boolean.class);
             responseMono.subscribe(
-                    _ -> telegramBot.enviarMensaje(chatId, "M"),
+                    response -> telegramBot.enviarMensaje(chatId, "Se ha desactivado el modo admin"),
                     error -> telegramBot.enviarMensaje(chatId,
                             "Hubo un error: " + error.getMessage())
             );
         }
-        return "Admin Mode OFF.";
+        return "";
     }
 }

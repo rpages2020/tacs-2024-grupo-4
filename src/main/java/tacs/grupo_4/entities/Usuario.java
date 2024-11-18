@@ -44,7 +44,4 @@ public class Usuario {
         return horaVenta != null ? horaVenta.format(formatter) : null;
     }
 
-    public boolean esAdmin() {
-        return true;
-    }
 }

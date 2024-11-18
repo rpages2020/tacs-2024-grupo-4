@@ -66,6 +66,16 @@ public class UsuarioController {
         }
     }
 
+    @GetMapping("/dni/{dni}")
+    public ResponseEntity<Usuario> obtenerUsuarioPorDni(@PathVariable int dni) {
+        try {
+            Usuario usuario = usuarioService.obtenerUsuarioPorDni(dni);
+            return new ResponseEntity<>(usuario, HttpStatus.OK);
+        } catch (UsuarioNotFoundException e) {
+            return new ResponseEntity<>(new Usuario(), HttpStatus.NOT_FOUND);
+        }
+    }
+
     @Operation(summary = "Crear un nuevo usuario", description = "Permite registrar un nuevo usuario en la plataforma.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario creado exitosamente",
@@ -131,13 +141,15 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}/adminModeOn")
-    public void adminModeOn(@PathVariable String id) {
+    public ResponseEntity<Boolean> adminModeOn(@PathVariable String id) {
         usuarioService.modoAdminOn(UUID.fromString(id));
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
     @PutMapping("/{id}/adminModeOff")
-    public void admonModeOff(@PathVariable String id) {
+    public ResponseEntity<Boolean> admonModeOff(@PathVariable String id) {
         usuarioService.modoAdminOff(UUID.fromString(id));
+        return new ResponseEntity<>(false, HttpStatus.OK);
     }
 
 }

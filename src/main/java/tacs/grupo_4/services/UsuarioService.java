@@ -10,7 +10,6 @@ import tacs.grupo_4.repositories.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Profile("api")
@@ -46,6 +45,12 @@ public class UsuarioService {
         return usuarioRepository.findByTelegramUserId(id)
                 .orElseThrow(UsuarioNotFoundException::new);
     }
+
+    public Usuario obtenerUsuarioPorDni(int dni) {
+        return usuarioRepository.findByDni(dni)
+                .orElseThrow(UsuarioNotFoundException::new);
+    }
+
     public List<Usuario> obtenerTodosLosUsuarios() {
         return usuarioRepository.findAll();
     }
@@ -59,12 +64,14 @@ public class UsuarioService {
    }
 
     public void modoAdminOn(UUID id) {
-       Optional<Usuario> usuario = usuarioRepository.findById(id);
-       usuario.get().setModoAdmin(true);
+       Usuario usuario = usuarioRepository.findById(id).get();
+       usuario.setModoAdmin(true);
+       usuarioRepository.save(usuario);
     }
 
     public void modoAdminOff(UUID id) {
-        Optional<Usuario> usuario = usuarioRepository.findById(id);
-        usuario.get().setModoAdmin(false);
+        Usuario usuario = usuarioRepository.findById(id).get();
+        usuario.setModoAdmin(false);
+        usuarioRepository.save(usuario);
     }
 }
