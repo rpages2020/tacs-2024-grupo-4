@@ -99,6 +99,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                     • whoami
 
                     Comandos Admin:
+                    • adminModeOn <dni>
+                    • adminModeOff <dni>
                     • cancelarEvento <eventoId>
                     • cerrarVenta <eventoId>
                     • eliminarEvento <eventoId>
