@@ -1,8 +1,8 @@
-# Común para todos los perfiles
+# Configuración común para todos los perfiles
 server:
   port: 8080
 
-# Configuración para el perfil 'api'
+# Configuración específica para el perfil 'api'
 ---
 spring:
   config:
@@ -21,18 +21,12 @@ spring:
 
 telegram:
   bot:
-    token: ACA-VA-EL-TOKEN
+    token: "ACA-VA-EL-TOKEN"
 
 logging:
   level:
-    org:
-      springframework:
-        data:
-          mongodb:
-            core:
-              MongoTemplate: DEBUG
-              index:
-                MongoPersistentEntityIndexCreator: DEBUG
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+    org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexCreator: DEBUG
 
 springdoc:
   swagger-ui:
@@ -41,7 +35,7 @@ springdoc:
   api-docs:
     enabled: true
 
-# Configuración para el perfil 'bot'
+# Configuración específica para el perfil 'bot'
 ---
 spring:
   config:
@@ -52,4 +46,4 @@ spring:
 
 telegram:
   bot:
-    token: BOT TOKEN ACA
+    token: "BOT-TOKEN-ACA"
