@@ -147,6 +147,7 @@ public class DataInitializer implements CommandLineRunner {
                     .ubicacion(ubicacion)
                     .estaActivo(true)
                     .sectores(Arrays.asList(sector1, sector2))
+                    .fechaCreacion(Evento.setFechaCreacion())
                     .build();
 
             eventos.add(evento);

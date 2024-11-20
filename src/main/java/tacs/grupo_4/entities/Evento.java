@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,6 +32,13 @@ public class Evento {
     private Boolean estaActivo;
     private String descripcion;
     private UUID usuario;
+    private String fechaCreacion;
+
+
+    public static String setFechaCreacion() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy");
+        return LocalDateTime.now().format(formatter);
+    }
 
     @Version
     private Long version;

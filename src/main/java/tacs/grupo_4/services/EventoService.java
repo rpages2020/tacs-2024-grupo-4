@@ -40,6 +40,7 @@ public class EventoService {
         this.usuarioRepository = usuarioRepository;
     }
 
+
     public Evento crearEvento(Evento evento) {
         return eventoRepository.save(evento);
     }
@@ -52,6 +53,7 @@ public class EventoService {
         return eventoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Evento no encontrado"));
     }
+
     @Transactional
     public List<Evento> obtenerEventosPorUserId(UUID id) {
         return eventoRepository.findByUsuario(id)
@@ -161,25 +163,27 @@ public class EventoService {
     }
 
     @Transactional
-    public void cancelarEvento(UUID id, UUID usuarioId) {
+    public void cancelarEvento(UUID id, long usuarioId) {
         Evento evento = eventoRepository.findById(id)
                 .orElseThrow(EventoNotFoundException::new);
-        Usuario usuario = usuarioRepository.findById(evento.getUsuario()).get();
-        if (!usuarioId.equals(evento.getUsuario()) && !usuario.isModoAdmin()) {
+        Usuario usuario = usuarioRepository.findByTelegramUserId(usuarioId).get();
+        if (usuario.getId().equals(evento.getUsuario()) || usuario.isModoAdmin()) {
+            evento.setEstaActivo(false);
+            eventoRepository.save(evento);
+        } else {
             throw new RuntimeException("Acceso denegado.");
         }
-        evento.setEstaActivo(false);
-        eventoRepository.save(evento);
     }
 
     @Transactional
     public void eliminarEvento(UUID id, UUID usuarioId) {
         Evento evento = obtenerEventoPorId(id);
         Usuario usuario = usuarioRepository.findById(evento.getUsuario()).get();
-        if (!usuarioId.equals(evento.getUsuario()) && !usuario.isModoAdmin()) {
+        if (usuarioId.equals(evento.getUsuario()) || usuario.isModoAdmin()) {
+            eventoRepository.delete(evento);
+        } else {
             throw new RuntimeException("Acceso denegado.");
         }
-        eventoRepository.delete(evento);
     }
 
     @Transactional
@@ -187,5 +191,12 @@ public class EventoService {
         Evento evento = obtenerEventoPorId(UUID.fromString(id));
         evento.setUsuario(UUID.randomUUID());
         eventoRepository.save(evento);
+    }
+
+    public long cantidadEventosPorFecha(String fecha) {
+        return eventoRepository.countByFechaCreacion(fecha);
+    }
+    public long cantidadAltasEntreFechas(String fecha1, String fecha2) {
+        return  eventoRepository.countByFechaCreacionBetween(fecha1, fecha2);
     }
 }

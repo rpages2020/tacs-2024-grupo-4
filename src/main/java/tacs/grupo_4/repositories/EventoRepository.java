@@ -13,4 +13,8 @@ import java.util.UUID;
 @Repository
 public interface EventoRepository extends MongoRepository<Evento, UUID> {
     Optional<List<Evento>> findByUsuario(UUID usuarioId);
+
+    long countByFechaCreacionBetween(String fecha1, String fecha2);
+
+    long countByFechaCreacion(String fecha);
 }

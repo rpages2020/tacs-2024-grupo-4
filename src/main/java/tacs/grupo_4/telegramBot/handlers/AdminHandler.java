@@ -134,4 +134,48 @@ public class AdminHandler {
         }
         return "";
     }
+
+    public String eventosCreadosPorFecha(String[] mensaje, String chatId, Long telegramUserId) {
+        if (mensaje.length < 1 || mensaje.length > 2) {
+            return "eventosCreadosPorFecha <dd-mm-aa> \n eventosCreadosPorFecha <dd-mm-aa>,<dd-mm-aa>";
+        }
+        if (usuarioHandler.verificarAdmin(chatId, telegramUserId) == null) {
+            return "";
+        }
+        if (mensaje.length == 1) {
+            String fecha = mensaje[0];
+            //verificar admin o antes
+            String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos/fechaAlta/" + fecha;
+            Mono<Long> responseMono = webClient.get()
+                    .uri(url)
+                    .retrieve()
+                    .bodyToMono(new ParameterizedTypeReference<Long>() {
+                    });
+
+            responseMono.subscribe(
+                    response -> telegramBot.enviarMensaje(chatId,
+                            "La cantidad de eventos que se crearon el " + fecha + " es: " + response),
+                    error -> telegramBot.enviarMensaje(chatId,
+                            "Hubo un error: " + error.getMessage())
+            );
+        } else {
+            String fecha1 = mensaje[0];
+            String fecha2 = mensaje[1];
+            //verificar admin o antes
+            String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos/entreFechas/" + fecha1 + "/" + fecha2;
+            Mono<Long> responseMono = webClient.get()
+                    .uri(url)
+                    .retrieve()
+                    .bodyToMono(new ParameterizedTypeReference<Long>() {
+                    });
+
+            responseMono.subscribe(
+                    response -> telegramBot.enviarMensaje(chatId,
+                            "La cantidad de eventos que se crearon entre " +  fecha1 + " y el " + fecha2 + " es: " + response),
+                    error -> telegramBot.enviarMensaje(chatId,
+                            "Hubo un error: " + error.getMessage())
+            );
+        }
+        return "";
+    }
 }

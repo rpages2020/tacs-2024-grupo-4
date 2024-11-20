@@ -173,8 +173,8 @@ public class EventoController {
     }
 
     @PutMapping("/{id}/usuario/{usuarioId}")
-    public ResponseEntity<String> cancelarEvento(@PathVariable String id, @PathVariable String usuarioId) {
-        eventoService.cancelarEvento(UUID.fromString(id), UUID.fromString(usuarioId));
+    public ResponseEntity<String> cancelarEvento(@PathVariable String id, @PathVariable long usuarioId) {
+        eventoService.cancelarEvento(UUID.fromString(id), usuarioId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -190,5 +190,14 @@ public class EventoController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/fechaAlta/{fecha}")
+    public long altasPorFecha(@PathVariable String fecha) {
+        return eventoService.cantidadEventosPorFecha(fecha);
+    }
+
+    @GetMapping("/entreFechas/{fecha1}/{fecha2}")
+    public long altasEntreFechas(@PathVariable String fecha1, @PathVariable String fecha2) {
+        return eventoService.cantidadAltasEntreFechas(fecha1, fecha2);
+    }
 
 }

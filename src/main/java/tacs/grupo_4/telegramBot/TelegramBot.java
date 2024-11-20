@@ -72,6 +72,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "adminmodeoff"             ->      usuarioHandler.descartivarModoAdmin(parametros, chatId, telegramUserId);
                 case "altasusuariosporfecha"    ->      adminHandler.usuariosPorFecha(parametros, chatId, telegramUserId);
                 case "ticketsporfecha"          ->      adminHandler.ticketsPorFecha(parametros, chatId, telegramUserId);
+                case "eventoscreadosporfecha"    ->      adminHandler.eventosCreadosPorFecha(parametros, chatId, telegramUserId);
                 case "cancelarevento"           ->      eventoHandler.cancelarEvento(parametros, chatId, telegramUserId);
                 case "cerrarventa"              ->      eventoHandler.cancelarEvento(parametros, chatId, telegramUserId);
                 case "eliminarevento"           ->      eventoHandler.eliminarEvento(parametros, chatId, telegramUserId);

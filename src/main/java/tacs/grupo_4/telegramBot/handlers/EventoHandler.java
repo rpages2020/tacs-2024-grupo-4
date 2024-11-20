@@ -72,6 +72,7 @@ public class EventoHandler {
                     .sectores(sectores)
                     .usuario(usuario.getId())
                     .estaActivo(true)
+                    .fechaCreacion(Evento.setFechaCreacion())
                     .build();
 
             // Enviar solicitud de creación de evento
@@ -227,7 +228,7 @@ public class EventoHandler {
         Usuario usuario = verificarUsusario(chatId, telegramUserId);
         if (usuario != null) {
             String eventoId = parametros[0];
-            String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos/" + eventoId + "/usuario/" + usuario.getId();
+            String url = telegramBot.getEnvBaseUrl() + ":8080/api/eventos/" + eventoId + "/usuario/" + telegramUserId;
             Mono<String> responseMono = webClient.put()
                     .uri(url)
                     .retrieve()
